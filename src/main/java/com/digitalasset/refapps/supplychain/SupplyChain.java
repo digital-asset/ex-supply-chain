@@ -33,15 +33,22 @@ public class SupplyChain {
 
   public static void main(String[] args) throws InterruptedException {
     CliOptions options = CliOptions.parseArgs(args);
-    //    MulticastProcessor<Instant> time = MulticastProcessor.create();
 
     DamlLedgerClient client =
         DamlLedgerClient.forHostWithLedgerIdDiscovery(
             options.getSandboxHost(), options.getSandboxPort(), Optional.empty());
+    logger.info(
+        "Waiting for DAML Sandbox on {}:{}", options.getSandboxHost(), options.getSandboxPort());
+    runBots(client);
 
-    waitForSandbox(options, client);
+    logger.info("Welcome to Direct Asset Control Demo Application!");
+    logger.info("Press Ctrl+C (for Mac and Linux, Ctrl+Z on Windows) to shut down the program.");
+    Thread.currentThread().join();
+  }
 
-    logger.info("Sandbox is started on port: {}", options.getSandboxPort());
+  public static void runBots(DamlLedgerClient client) {
+    waitForSandbox(client);
+    logger.info("Connected to DAML Sandbox.");
 
     // We create a Flowable<Instant> clockFlowable to set the time
     client
@@ -99,24 +106,16 @@ public class SupplyChain {
         inventoryQuoteRequestBot2.transactionFilter,
         inventoryQuoteRequestBot2::calculateCommands,
         inventoryQuoteRequestBot2::getContractInfo);
-
-    logger.info("Welcome to Direct Asset Control Demo Application!");
-    logger.info("Press Ctrl+C (for Mac and Linux, Ctrl+Z on Windows) to shut down the program.");
-    Thread.currentThread().join();
   }
 
-  public static void waitForSandbox(CliOptions options, DamlLedgerClient client) {
-    waitForSandbox(options.getSandboxHost(), options.getSandboxPort(), client);
-  }
-
-  public static void waitForSandbox(String host, int port, DamlLedgerClient client) {
+  public static void waitForSandbox(DamlLedgerClient client) {
     boolean connected = false;
     while (!connected) {
       try {
         client.connect();
         connected = true;
       } catch (Exception _ignored) {
-        logger.info(String.format("Connecting to sandbox at %s:%s", host, port));
+        logger.info(String.format("Connecting to sandbox..."));
         try {
           Thread.sleep(1000);
         } catch (InterruptedException ignored) {
