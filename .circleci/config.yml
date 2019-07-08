@@ -75,7 +75,7 @@ jobs:
           command: |
             export PATH=${HOME}/.daml/bin:${PATH}
             daml build -o target/supplychain.dar
-            daml test --junit target/daml-test-reports/daml-test.xml src/main/daml/DA/RefApps/SupplyChain/Scenarios.daml
+            daml test --junit target/daml-test-reports/daml-test.xml --files src/main/daml/DA/RefApps/SupplyChain/Scenarios.daml
       - save_cache:
           paths:
             - ~/.daml

@@ -31,15 +31,12 @@ _**Note:** If you change the DAML models locally, you need to run re-run this co
 ### Starting the App
 
 Running on local machine requires three terminal tabs:
-1. Run Sandbox:
+1. Run Sandbox and Navigator:
 ```bash
-daml sandbox -- --port 7600 --scenario DA.RefApps.SupplyChain.Scenarios:setup target/supplychain.dar
+daml start
 ```
-2. Run Navigator Backend:
-```bash
-daml navigator -- server localhost 7600 --port 7500 --config-file ui-backend.conf
-```
-3. Run bots:
+
+2. Run bots:
 ```bash
 java -jar target/supplychain-0.0.1-SNAPSHOT.jar -p 7600
 ```
