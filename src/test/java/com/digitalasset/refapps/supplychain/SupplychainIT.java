@@ -9,8 +9,10 @@ import static com.digitalasset.testing.Dsl.*;
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
 import com.digitalasset.testing.junit4.Sandbox;
+import com.digitalasset.testing.ledger.DefaultLedgerAdapter;
 import com.digitalasset.testing.utils.ContractWithId;
 import com.google.common.collect.Lists;
+import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.supplychain.aggregate.AggregatedQuote;
 import da.refapps.supplychain.aggregate.AggregatedQuotePending;
 import da.refapps.supplychain.delivery.*;
@@ -70,21 +72,25 @@ public class SupplychainIT {
   @Test(expected = TimeoutException.class)
   public void testPartyIsCorrect() throws IOException {
     BuyerSellerRelationship.ContractId cidOfBuyerSellerRelationship =
-        sandbox.getCreatedContractId(
-            BUYER_PARTY,
-            BuyerSellerRelationship.TEMPLATE_ID,
-            record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
-            BuyerSellerRelationship.ContractId::new);
+        sandbox
+            .getLedgerAdapter()
+            .getCreatedContractId(
+                BUYER_PARTY,
+                BuyerSellerRelationship.TEMPLATE_ID,
+                record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
+                BuyerSellerRelationship.ContractId::new);
   }
 
   @Test
   public void testFullWorkflow() throws IOException {
+    final DefaultLedgerAdapter ledgerAdapter = sandbox.getLedgerAdapter();
+
     Text workflowId = text("quoteId");
     LocalDate date1 = LocalDate.of(2019, 6, 6);
     LocalDate date2 = LocalDate.of(2019, 6, 7);
 
     BuyerSellerRelationship.ContractId buyerSellerRelationshipCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             BUYER_PARTY,
             BuyerSellerRelationship.TEMPLATE_ID,
             record(BUYER_PARTY, BUYER_ADDRESS, SELLER_PARTY),
@@ -92,57 +98,47 @@ public class SupplychainIT {
 
     // Send a quote request
     OrderedProduct orderedProduct = new OrderedProduct("Product 1", 100L, date1, date2);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            BUYER_PARTY,
-            buyerSellerRelationshipCid.exerciseBuyerSellerRelationship_SendQuoteRequest(
-                Collections.singletonList(orderedProduct)));
+    ledgerAdapter.exerciseChoice(
+        BUYER_PARTY,
+        buyerSellerRelationshipCid.exerciseBuyerSellerRelationship_SendQuoteRequest(
+            Collections.singletonList(orderedProduct)));
 
     QuoteRequest.ContractId quoteRequestCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             BUYER_PARTY,
             QuoteRequest.TEMPLATE_ID,
             record(BUYER_PARTY, BUYER_ADDRESS, SELLER_PARTY, list(orderedProduct.toValue())),
             QuoteRequest.ContractId::new);
 
     // Accept quote request
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SELLER_PARTY, quoteRequestCid.exerciseQuoteRequest_Accept(workflowId.getValue()));
+    ledgerAdapter.exerciseChoice(
+        SELLER_PARTY, quoteRequestCid.exerciseQuoteRequest_Accept(workflowId.getValue()));
     QuoteRequestAccepted.ContractId quoteRequestAcceptedCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SELLER_PARTY, QuoteRequestAccepted.TEMPLATE_ID, QuoteRequestAccepted.ContractId::new);
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SELLER_PARTY,
-            quoteRequestAcceptedCid.exerciseQuoteRequestAccepted_SendToSupplier(
-                SUPPLIER_PARTY.getValue()));
+    ledgerAdapter.exerciseChoice(
+        SELLER_PARTY,
+        quoteRequestAcceptedCid.exerciseQuoteRequestAccepted_SendToSupplier(
+            SUPPLIER_PARTY.getValue()));
     QuoteRequestSupplyInvitation.ContractId quoteRequestSupplyInvitationCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SUPPLIER_PARTY,
             QuoteRequestSupplyInvitation.TEMPLATE_ID,
             QuoteRequestSupplyInvitation.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SUPPLIER_PARTY,
-            quoteRequestSupplyInvitationCid.exerciseQuoteRequestSupplyInvitation_Accept());
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY,
+        quoteRequestSupplyInvitationCid.exerciseQuoteRequestSupplyInvitation_Accept());
     SupplyRequest.ContractId supplyRequestCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SUPPLIER_PARTY, SupplyRequest.TEMPLATE_ID, SupplyRequest.ContractId::new);
 
     // supply
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SUPPLIER_PARTY,
-            supplyRequestCid.exerciseSupplyRequest_StartPriceCollection(
-                Lists.newArrayList(WAREHOUSE1_PARTY.getValue(), WAREHOUSE2_PARTY.getValue()),
-                Lists.newArrayList(TRANSPORT1_PARTY.getValue(), TRANSPORT2_PARTY.getValue())));
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY,
+        supplyRequestCid.exerciseSupplyRequest_StartPriceCollection(
+            Lists.newArrayList(WAREHOUSE1_PARTY.getValue(), WAREHOUSE2_PARTY.getValue()),
+            Lists.newArrayList(TRANSPORT1_PARTY.getValue(), TRANSPORT2_PARTY.getValue())));
     WarehouseProduct warehouseProduct1 =
         new WarehouseProduct(
             "Product 1", WAREHOUSE1_PARTY.getValue(), WAREHOUSE1_ADDRESS.getValue(), 100l);
@@ -162,7 +158,7 @@ public class SupplychainIT {
     TransportQuoteItem transportQuoteItem22 =
         new TransportQuoteItem(100l, new BigDecimal(200), date1, date2);
     TransportQuoteRequest.ContractId transportQuoteReq11 =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             TRANSPORT1_PARTY,
             TransportQuoteRequest.TEMPLATE_ID,
             record(
@@ -173,14 +169,12 @@ public class SupplychainIT {
                 BUYER_ADDRESS,
                 warehouseProductWithDates1.toValue()),
             TransportQuoteRequest.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            TRANSPORT1_PARTY,
-            transportQuoteReq11.exerciseTransportQuoteRequest_Accept(transportQuoteItem11));
+    ledgerAdapter.exerciseChoice(
+        TRANSPORT1_PARTY,
+        transportQuoteReq11.exerciseTransportQuoteRequest_Accept(transportQuoteItem11));
 
     TransportQuoteRequest.ContractId transportQuoteReq12 =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             TRANSPORT1_PARTY,
             TransportQuoteRequest.TEMPLATE_ID,
             record(
@@ -191,14 +185,12 @@ public class SupplychainIT {
                 BUYER_ADDRESS,
                 warehouseProductWithDates2.toValue()),
             TransportQuoteRequest.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            TRANSPORT1_PARTY,
-            transportQuoteReq12.exerciseTransportQuoteRequest_Accept(transportQuoteItem12));
+    ledgerAdapter.exerciseChoice(
+        TRANSPORT1_PARTY,
+        transportQuoteReq12.exerciseTransportQuoteRequest_Accept(transportQuoteItem12));
 
     TransportQuoteRequest.ContractId transportQuoteReq21 =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             TRANSPORT2_PARTY,
             TransportQuoteRequest.TEMPLATE_ID,
             record(
@@ -209,14 +201,12 @@ public class SupplychainIT {
                 BUYER_ADDRESS,
                 warehouseProductWithDates1.toValue()),
             TransportQuoteRequest.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            TRANSPORT2_PARTY,
-            transportQuoteReq21.exerciseTransportQuoteRequest_Accept(transportQuoteItem21));
+    ledgerAdapter.exerciseChoice(
+        TRANSPORT2_PARTY,
+        transportQuoteReq21.exerciseTransportQuoteRequest_Accept(transportQuoteItem21));
 
     TransportQuoteRequest.ContractId transportQuoteReq22 =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             TRANSPORT2_PARTY,
             TransportQuoteRequest.TEMPLATE_ID,
             record(
@@ -227,84 +217,71 @@ public class SupplychainIT {
                 BUYER_ADDRESS,
                 warehouseProductWithDates2.toValue()),
             TransportQuoteRequest.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            TRANSPORT2_PARTY,
-            transportQuoteReq22.exerciseTransportQuoteRequest_Accept(transportQuoteItem22));
+    ledgerAdapter.exerciseChoice(
+        TRANSPORT2_PARTY,
+        transportQuoteReq22.exerciseTransportQuoteRequest_Accept(transportQuoteItem22));
 
     // Choose transport
 
     TransportQuoteRequestPending.ContractId transportQuoteRequestPendingCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SUPPLIER_PARTY,
             TransportQuoteRequestPending.TEMPLATE_ID,
             TransportQuoteRequestPending.ContractId::new);
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SUPPLIER_PARTY,
-            transportQuoteRequestPendingCid.exerciseTransportQuoteRequestPending_ChooseTransport());
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY,
+        transportQuoteRequestPendingCid.exerciseTransportQuoteRequestPending_ChooseTransport());
 
     AggregatedQuotePending.ContractId aggregateQuotePendingCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SUPPLIER_PARTY,
             AggregatedQuotePending.TEMPLATE_ID,
             AggregatedQuotePending.ContractId::new);
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SUPPLIER_PARTY,
-            aggregateQuotePendingCid.exerciseAggregatedQuotePending_SendQuoteToSeller());
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY,
+        aggregateQuotePendingCid.exerciseAggregatedQuotePending_SendQuoteToSeller());
     AggregatedQuote.ContractId aggregatedQuoteCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SELLER_PARTY, AggregatedQuote.TEMPLATE_ID, AggregatedQuote.ContractId::new);
 
     // order
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            SELLER_PARTY,
-            aggregatedQuoteCid.exerciseAggregatedQuote_AddMargin(new BigDecimal("0.1")));
+    ledgerAdapter.exerciseChoice(
+        SELLER_PARTY, aggregatedQuoteCid.exerciseAggregatedQuote_AddMargin(new BigDecimal("0.1")));
     QuoteForBuyer.ContractId quoteForBuyerCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             BUYER_PARTY, QuoteForBuyer.TEMPLATE_ID, QuoteForBuyer.ContractId::new);
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(BUYER_PARTY, quoteForBuyerCid.exerciseQuoteForBuyer_Accept());
+    ledgerAdapter.exerciseChoice(BUYER_PARTY, quoteForBuyerCid.exerciseQuoteForBuyer_Accept());
     ConfirmedOrder.ContractId confirmedOrderCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SELLER_PARTY, ConfirmedOrder.TEMPLATE_ID, ConfirmedOrder.ContractId::new);
 
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(SELLER_PARTY, confirmedOrderCid.exerciseConfirmedOrder_StartDelivery());
+    ledgerAdapter.exerciseChoice(
+        SELLER_PARTY, confirmedOrderCid.exerciseConfirmedOrder_StartDelivery());
 
     // delivery
-    sandbox.getLedgerAdapter().setCurrentTime(date1.atStartOfDay(ZoneId.of("UTC")).toInstant());
-    nextPickup(TRANSPORT1_PARTY);
-    nextPickup(TRANSPORT1_PARTY);
-    nextPickup(TRANSPORT2_PARTY);
+    ledgerAdapter.setCurrentTime(date1.atStartOfDay(ZoneId.of("UTC")).toInstant());
+    nextPickup(ledgerAdapter, TRANSPORT1_PARTY);
+    nextPickup(ledgerAdapter, TRANSPORT1_PARTY);
+    nextPickup(ledgerAdapter, TRANSPORT2_PARTY);
 
-    sandbox.getLedgerAdapter().setCurrentTime(date2.atStartOfDay(ZoneId.of("UTC")).toInstant());
-    nextDelivery();
-    nextDelivery();
-    nextDelivery();
+    ledgerAdapter.setCurrentTime(date2.atStartOfDay(ZoneId.of("UTC")).toInstant());
+    nextDelivery(ledgerAdapter);
+    nextDelivery(ledgerAdapter);
+    nextDelivery(ledgerAdapter);
   }
 
-  private void nextPickup(Party transportCompany) {
+  private void nextPickup(DefaultLedgerAdapter ledgerAdapter, Party transportCompany)
+      throws InvalidProtocolBufferException {
     ContractWithId<DeliveryInstruction.ContractId> deliveryInstructionWithCid =
-        sandbox.getMatchedContract(
+        ledgerAdapter.getMatchedContract(
             transportCompany, DeliveryInstruction.TEMPLATE_ID, DeliveryInstruction.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(
-            transportCompany,
-            deliveryInstructionWithCid.contractId.exerciseDeliveryInstruction_PickUp());
+    ledgerAdapter.exerciseChoice(
+        transportCompany,
+        deliveryInstructionWithCid.contractId.exerciseDeliveryInstruction_PickUp());
     Party warehouse =
         deliveryInstructionWithCid
             .record
@@ -315,38 +292,34 @@ public class SupplychainIT {
             .asParty()
             .get();
     PickUpRequest.ContractId pickUpRequestCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             warehouse, PickUpRequest.TEMPLATE_ID, PickUpRequest.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(warehouse, pickUpRequestCid.exercisePickUpRequest_Accept());
+    ledgerAdapter.exerciseChoice(warehouse, pickUpRequestCid.exercisePickUpRequest_Accept());
     TransportPending.ContractId transportPendingCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             transportCompany, TransportPending.TEMPLATE_ID, TransportPending.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(transportCompany, transportPendingCid.exerciseTransportPending_Deliver());
+    ledgerAdapter.exerciseChoice(
+        transportCompany, transportPendingCid.exerciseTransportPending_Deliver());
   }
 
-  private void nextDelivery() {
+  private void nextDelivery(DefaultLedgerAdapter ledgerAdapter)
+      throws InvalidProtocolBufferException {
     ContractWithId<Delivery.ContractId> deliveryWithCid =
-        sandbox.getMatchedContract(BUYER_PARTY, Delivery.TEMPLATE_ID, Delivery.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(BUYER_PARTY, deliveryWithCid.contractId.exerciseDelivery_Acknowledge());
+        ledgerAdapter.getMatchedContract(
+            BUYER_PARTY, Delivery.TEMPLATE_ID, Delivery.ContractId::new);
+    ledgerAdapter.exerciseChoice(
+        BUYER_PARTY, deliveryWithCid.contractId.exerciseDelivery_Acknowledge());
     DeliveryPayment.ContractId deliveryPaymentCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             BUYER_PARTY, DeliveryPayment.TEMPLATE_ID, DeliveryPayment.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(SUPPLIER_PARTY, deliveryPaymentCid.exerciseDeliveryPayment_Accept());
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY, deliveryPaymentCid.exerciseDeliveryPayment_Accept());
     DeliverySupplierPayment.ContractId supplierPaymentCid =
-        sandbox.getCreatedContractId(
+        ledgerAdapter.getCreatedContractId(
             SUPPLIER_PARTY,
             DeliverySupplierPayment.TEMPLATE_ID,
             DeliverySupplierPayment.ContractId::new);
-    sandbox
-        .getLedgerAdapter()
-        .exerciseChoice(SUPPLIER_PARTY, supplierPaymentCid.exerciseDeliverySupplierPayment_Pay());
+    ledgerAdapter.exerciseChoice(
+        SUPPLIER_PARTY, supplierPaymentCid.exerciseDeliverySupplierPayment_Pay());
   }
 }
