@@ -267,6 +267,8 @@ Note that Supplier can see the available quantity of goods in each warehouse, as
     * margin: a decimal number describing the margin (e.g. `0.1` means 10% margin)
 6. Choose **Submit**.
 
+_Note:_ You cannot click on the contract if you did not start the bots. In this case you need to start over, and make sure the bots run.
+
 ### Order and Delivery
 
 #### Accepting the Quote
