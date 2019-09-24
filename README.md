@@ -176,7 +176,7 @@ To request a quote:
 4. Select the **BuyerSellerRelationship_SendQuoteRequest** choice.
 5. Click on **Add new element**
 6. Fill in the parameters:
-    * productName: the name of the ordered product (must match an existing inventory item)
+    * productName: the name of the ordered product (_must match an existing inventory item_, see them on the Inventory page logged in as Supplier)
     * quantity: the ordered quantity
     * deliveryFrom: the start of the acceptable delivery period
     * deliveryTo: the end of the acceptable delivery period
