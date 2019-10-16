@@ -16,6 +16,7 @@ The Supply Chain application demonstrates a generic example between a Buyer, Sel
 **Disclaimer:** This reference application is intended to demonstrate the capabilities of the DAML. You are recommended to consider other non-functional aspects, like security, resiliency, recoverability, etc prior to production use.
 
 #### Prerequisites
+
 Be sure you have the following installed:
 - [DAML SDK](https://docs.daml.com/)
 - Docker
@@ -67,10 +68,7 @@ _**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to
 
 #### Stopping Standalone Run
 1. Stop the bots by pressing **Ctrl+C**.
-2. Stop the Sandbox, type:
-   ```shell
-   daml stop
-   ```
+1. Stop the Sandbox and the Navigator by pressing **Ctrl+C** in the DAML assistant.
 
 ### Resetting the Prototype
 
