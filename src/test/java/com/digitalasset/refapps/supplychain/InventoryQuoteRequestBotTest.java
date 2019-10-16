@@ -16,7 +16,6 @@ import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
 import da.refapps.supplychain.inventory.InventoryItem;
 import da.refapps.supplychain.quoterequest.InventoryQuoteRequestBotTrigger;
 import da.refapps.supplychain.types.OrderedProduct;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Duration;
@@ -36,7 +35,7 @@ public class InventoryQuoteRequestBotTest {
   private InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
 
   @Test
-  public void calculateCommands() throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommands() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
@@ -65,8 +64,7 @@ public class InventoryQuoteRequestBotTest {
         });
   }
 
-  public void calculateCommandsNoopOnWrongProduct()
-      throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommandsNoopOnWrongProduct() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
@@ -86,8 +84,7 @@ public class InventoryQuoteRequestBotTest {
     bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 
-  public void calculateCommandsNoopOnWrongWarehouse()
-      throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommandsNoopOnWrongWarehouse() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
