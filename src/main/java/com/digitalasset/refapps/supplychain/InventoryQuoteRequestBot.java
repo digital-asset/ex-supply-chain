@@ -81,8 +81,7 @@ public class InventoryQuoteRequestBot {
             new InventoryQuoteRequestBotTrigger.ContractId(invQuoteReqTrigger.getKey())
                 .exerciseInventoryQuoteRequestBotTrigger_Accept(inventoryItemCid));
       } else {
-        throw new IllegalStateException(
-            "No inventory item found for: " + warehouse + ", " + product);
+        logger.error("No inventory item found for: {} in {}", product, warehouse);
       }
     }
 

@@ -22,6 +22,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
@@ -65,8 +66,8 @@ public class InventoryQuoteRequestBotTest {
         });
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void calculateCommandsFailureWrongProduct()
+  @Test(expected = NoSuchElementException.class)
+  public void calculateCommandsNoopOnWrongProduct()
       throws InvocationTargetException, IllegalAccessException {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
@@ -87,8 +88,8 @@ public class InventoryQuoteRequestBotTest {
     CommandsAndPendingSet cmds = bot.calculateCommands(ledgerView).blockingFirst();
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void calculateCommandsFailureWrongWarehouse()
+  @Test(expected = NoSuchElementException.class)
+  public void calculateCommandsNoopOnWrongWarehouse()
       throws InvocationTargetException, IllegalAccessException {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
