@@ -22,7 +22,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
@@ -66,7 +65,6 @@ public class InventoryQuoteRequestBotTest {
         });
   }
 
-  @Test(expected = NoSuchElementException.class)
   public void calculateCommandsNoopOnWrongProduct()
       throws InvocationTargetException, IllegalAccessException {
     ledgerView =
@@ -85,10 +83,9 @@ public class InventoryQuoteRequestBotTest {
             .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
             .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
 
-    CommandsAndPendingSet cmds = bot.calculateCommands(ledgerView).blockingFirst();
+    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 
-  @Test(expected = NoSuchElementException.class)
   public void calculateCommandsNoopOnWrongWarehouse()
       throws InvocationTargetException, IllegalAccessException {
     ledgerView =
@@ -107,6 +104,6 @@ public class InventoryQuoteRequestBotTest {
             .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
             .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
 
-    CommandsAndPendingSet cmds = bot.calculateCommands(ledgerView).blockingFirst();
+    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 }
