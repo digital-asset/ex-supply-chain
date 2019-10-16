@@ -46,7 +46,7 @@ _**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to
     ```shell
     docker-compose up --build
     ```
-2. Open UI in a new browser tab with http://localhost:7500
+2. Open UI with a browser at http://localhost:7500.
 
 
 #### Option 2: Start App in Standalone
@@ -55,7 +55,7 @@ _**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to
     ```shell
     daml start
     ```
-    The navigator will automatically open in new browser tab at http://localhost:7500
+    The navigator will automatically open in new browser tab at http://localhost:7500.
 2. Start the automation logic by starting bots. Type:
     ```shell
     java -jar target/supplychain-0.0.1-SNAPSHOT.jar
