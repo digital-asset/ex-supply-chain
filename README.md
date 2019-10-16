@@ -1,4 +1,4 @@
-# Read Me -- Supply Chain Application
+# Reference Application: Supply Chain Application
 
 ## Overview
 
@@ -17,56 +17,66 @@ The Supply Chain application demonstrates a generic example between a Buyer, Sel
 
 #### Prerequisites
 Be sure you have the following installed:
-* DAML SDK
-* Docker
-* Java
-* Maven
+- [DAML SDK](https://docs.daml.com/)
+- Docker
+- Java
+- Maven
 
 #### Build with Maven
 
 Type:
-```
+```shell
 mvn clean package
 ```
-_**Note:** If you change the DAML models locally, you need to run re-run this command before starting the application._
+
+**Note:** If you change the DAML models locally, you need to re-run this command before starting the application.
 
 ### Starting the App
 
-Running on local machine requires three terminal tabs:
-1. Run Sandbox and Navigator:
-```bash
-daml start
-```
+**Note:** Make sure you have built the application with Maven (see: [Build with Maven](#build-with-maven)).
 
-2. Run bots:
-```bash
-java -jar target/supplychain-0.0.1-SNAPSHOT.jar
-```
+There are two options:
 
-3. Navigate to the URL: http://localhost:7500 with a browser to interact with the application.
+#### Option 1: Start App with Docker
 
-### Running with Docker-compose
 _**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to be changed to use at least 6 CPUs, due to a bug in the platform._
 
-After a Maven build, you can start with
-```bash
-docker-compose up --build
-```
+1. Type:
+    ```shell
+    docker-compose up --build
+    ```
+2. Open UI in a new browser tab with http://localhost:7500
 
-and stop with
-```bash
-docker-compose down
-```
+
+#### Option 2: Start App in Standalone
+
+1. Start the DAML Sandbox and Navigator. Type:
+    ```shell
+    daml start
+    ```
+    The navigator will automatically open in new browser tab at http://localhost:7500
+2. Start the automation logic by starting bots. Type:
+    ```shell
+    java -jar target/supplychain-0.0.1-SNAPSHOT.jar
+    ```
+
+### Stopping the App
+
+#### Stopping Dockerized Run
+1. Stop the Docker containers or bots by pressing **Ctrl+C**. (Alternatively, you can also stop it by typing `docker-compose down`.)
+
+#### Stopping Standalone Run
+1. Stop the bots by pressing **Ctrl+C**.
+2. Stop the Sandbox, type:
+   ```shell
+   daml stop
+   ```
 
 ### Resetting the Prototype
 
 Reset the application by following these steps:
-
-1. Stop the App by following the steps above.
-
-2. Start the App in Docker or Standalone mode by following the steps in the relevant section.
-
-3. Stop the running application on each of the terminal tabs (using **CTRL+C**) and start again.
+1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
+2.  Start the app in [Docker](#using-docker) or [Standalone](#standalone-mode) by following the steps in the relevant section.
 
 ## User Guide
 This User Guide will take you step-by-step through the whole supply chain process described in the Overview.
@@ -342,5 +352,5 @@ _Note:_ You cannot click on the contract if you did not start the bots. In this 
 5. Choose **Submit**.
 
 
-CONFIDENTIAL © 2019 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved. 
+CONFIDENTIAL © 2019 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
 Any unauthorized use, duplication or distribution is strictly prohibited.
