@@ -16,7 +16,6 @@ import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
 import da.refapps.supplychain.inventory.InventoryItem;
 import da.refapps.supplychain.quoterequest.InventoryQuoteRequestBotTrigger;
 import da.refapps.supplychain.types.OrderedProduct;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Duration;
@@ -36,7 +35,7 @@ public class InventoryQuoteRequestBotTest {
   private InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
 
   @Test
-  public void calculateCommands() throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommands() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
@@ -65,9 +64,7 @@ public class InventoryQuoteRequestBotTest {
         });
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void calculateCommandsFailureWrongProduct()
-      throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommandsNoopOnWrongProduct() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
@@ -84,12 +81,10 @@ public class InventoryQuoteRequestBotTest {
             .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
             .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
 
-    CommandsAndPendingSet cmds = bot.calculateCommands(ledgerView).blockingFirst();
+    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void calculateCommandsFailureWrongWarehouse()
-      throws InvocationTargetException, IllegalAccessException {
+  public void calculateCommandsNoopOnWrongWarehouse() {
     ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
@@ -106,6 +101,6 @@ public class InventoryQuoteRequestBotTest {
             .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
             .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
 
-    CommandsAndPendingSet cmds = bot.calculateCommands(ledgerView).blockingFirst();
+    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 }
