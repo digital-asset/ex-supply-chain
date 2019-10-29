@@ -58,7 +58,7 @@ _**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to
     The navigator will automatically open in new browser tab at http://localhost:7500.
 2. Start the automation logic by starting bots. Type:
     ```shell
-    java -jar target/supplychain-0.0.1-SNAPSHOT.jar
+    java -jar target/supplychain-0.0.1-SNAPSHOT.jar -p 6865
     ```
 
 ### Stopping the App
