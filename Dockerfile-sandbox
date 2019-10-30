@@ -11,6 +11,6 @@ WORKDIR /home/sdk
 
 COPY target/supplychain.dar /home/sdk/
 
-EXPOSE 7600
+EXPOSE 6865
 
-CMD ~/.daml/bin/daml sandbox -- --port 7600 --scenario DA.RefApps.SupplyChain.Scenarios:setup supplychain.dar
+CMD ~/.daml/bin/daml sandbox -- --port 6865 --scenario DA.RefApps.SupplyChain.Scenarios:setup supplychain.dar
