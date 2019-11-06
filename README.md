@@ -40,8 +40,6 @@ There are two options:
 
 #### Option 1: Start App with Docker
 
-_**Note:** This works on Linux, but, on MacOS, the Docker configuration needs to be changed to use at least 6 CPUs, due to a bug in the platform._
-
 1. Type:
     ```shell
     docker-compose up --build
