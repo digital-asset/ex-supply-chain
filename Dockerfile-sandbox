@@ -18,4 +18,4 @@ USER daml
 
 EXPOSE 6865
 
-CMD ~/.daml/bin/daml sandbox -- --port 6865 --scenario DA.RefApps.SupplyChain.Scenarios:setup supplychain.dar
+CMD ~/.daml/bin/daml sandbox -- --address 0.0.0.0 --port 6865 --scenario DA.RefApps.SupplyChain.Scenarios:setup supplychain.dar
