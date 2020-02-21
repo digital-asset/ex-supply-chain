@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-sdk-version: 0.13.51
+sdk-version: 0.13.54
 name: supplychain
 source: src/main/daml/DA/RefApps/SupplyChain/Scenarios.daml
 scenario: DA.RefApps.SupplyChain.Scenarios:setup
