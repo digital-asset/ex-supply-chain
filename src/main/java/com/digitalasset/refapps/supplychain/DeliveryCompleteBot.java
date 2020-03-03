@@ -9,12 +9,12 @@ import static com.digitalasset.refapps.supplychain.util.TemplateManager.filterTe
 import com.daml.ledger.javaapi.data.Filter;
 import com.daml.ledger.javaapi.data.FiltersByParty;
 import com.daml.ledger.javaapi.data.InclusiveFilter;
-import com.daml.ledger.javaapi.data.Record;
 import com.daml.ledger.javaapi.data.Template;
 import com.daml.ledger.javaapi.data.TransactionFilter;
 import com.daml.ledger.rxjava.components.LedgerViewFlowable;
 import com.daml.ledger.rxjava.components.helpers.CommandsAndPendingSet;
 import com.daml.ledger.rxjava.components.helpers.CreatedContract;
+import com.daml.ledger.rxjava.components.helpers.TemplateUtils;
 import com.digitalasset.refapps.supplychain.util.BotLogger;
 import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
 import com.google.common.collect.Sets;
@@ -67,15 +67,7 @@ public class DeliveryCompleteBot {
   }
 
   public Template getContractInfo(CreatedContract createdContract) {
-    Record args = createdContract.getCreateArguments();
-    if (createdContract.getTemplateId().equals(DeliveryComplete.TEMPLATE_ID)) {
-      return DeliveryComplete.fromValue(args);
-    } else {
-      String msg =
-          "DeliveryCompleteBot encountered an unknown contract of type "
-              + createdContract.getTemplateId();
-      logger.error(msg);
-      throw new IllegalStateException(msg);
-    }
+    //noinspection unchecked
+    return TemplateUtils.contractTransformer(DeliveryComplete.class).apply(createdContract);
   }
 }
