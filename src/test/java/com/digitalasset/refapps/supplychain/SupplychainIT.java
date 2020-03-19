@@ -56,7 +56,7 @@ public class SupplychainIT {
   private static Text WAREHOUSE1_ADDRESS = new Text("1345, Liberty City, Fleet street 1");
   private static Text WAREHOUSE2_ADDRESS = new Text("2456, San Andreas, Main street 9");
 
-  private static Sandbox sandboxC =
+  private static Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
           .module(TEST_MODULE)
@@ -65,13 +65,13 @@ public class SupplychainIT {
           .setupAppCallback(SupplyChain::runBots)
           .build();
 
-  @ClassRule public static ExternalResource sandboxClassRule = sandboxC.getClassRule();
-  @Rule public ExternalResource sandboxRule = sandboxC.getRule();
+  @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
+  @Rule public ExternalResource sandboxRule = sandbox.getRule();
 
   @Test(expected = TimeoutException.class)
   public void testPartyIsCorrect() throws IOException {
     BuyerSellerRelationship.ContractId cidOfBuyerSellerRelationship =
-        sandboxC
+        sandbox
             .getLedgerAdapter()
             .getCreatedContractId(
                 BUYER_PARTY,
@@ -82,7 +82,7 @@ public class SupplychainIT {
 
   @Test
   public void testFullWorkflow() throws IOException {
-    final DefaultLedgerAdapter ledgerAdapter = sandboxC.getLedgerAdapter();
+    final DefaultLedgerAdapter ledgerAdapter = sandbox.getLedgerAdapter();
 
     Text workflowId = text("quoteId");
     LocalDate date1 = LocalDate.of(2019, 6, 6);
