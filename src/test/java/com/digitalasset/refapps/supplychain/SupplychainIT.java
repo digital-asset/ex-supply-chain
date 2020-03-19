@@ -59,20 +59,19 @@ public class SupplychainIT {
   private static Sandbox sandboxC =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
-          .projectDir(Paths.get("."))
           .module(TEST_MODULE)
           .scenario(TEST_SCENARIO)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
           .setupAppCallback(SupplyChain::runBots)
           .build();
 
-  @ClassRule public static ExternalResource compile = sandboxC.compilation();
-  @Rule public Sandbox.Process sandbox = sandboxC.process();
+  @ClassRule public static ExternalResource sandboxClassRule = sandboxC.getClassRule();
+  @Rule public ExternalResource sandboxRule = sandboxC.getRule();
 
   @Test(expected = TimeoutException.class)
   public void testPartyIsCorrect() throws IOException {
     BuyerSellerRelationship.ContractId cidOfBuyerSellerRelationship =
-        sandbox
+        sandboxC
             .getLedgerAdapter()
             .getCreatedContractId(
                 BUYER_PARTY,
@@ -83,7 +82,7 @@ public class SupplychainIT {
 
   @Test
   public void testFullWorkflow() throws IOException {
-    final DefaultLedgerAdapter ledgerAdapter = sandbox.getLedgerAdapter();
+    final DefaultLedgerAdapter ledgerAdapter = sandboxC.getLedgerAdapter();
 
     Text workflowId = text("quoteId");
     LocalDate date1 = LocalDate.of(2019, 6, 6);
