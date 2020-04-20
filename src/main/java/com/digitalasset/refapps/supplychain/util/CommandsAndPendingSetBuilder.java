@@ -96,11 +96,11 @@ public class CommandsAndPendingSetBuilder {
       if (commands.isEmpty() && pendingContractIds.isEmpty()) {
         return Optional.empty();
       } else {
-        Instant now = clockSupplier.get().instant();
-        Instant mrt = now.plus(mrtDuration);
+        Optional<Instant> now = Optional.of(clockSupplier.get().instant());
+        Optional<Duration> mrt = Optional.of(mrtDuration);
         SubmitCommandsRequest commandsRequest =
             new SubmitCommandsRequest(
-                workflowId, appId, UUID.randomUUID().toString(), party, now, mrt, commands);
+                workflowId, appId, UUID.randomUUID().toString(), party, now, mrt, Optional.empty(), commands);
         return Optional.of(
             new CommandsAndPendingSet(commandsRequest, HashTreePMap.from(pendingContractIds)));
       }
