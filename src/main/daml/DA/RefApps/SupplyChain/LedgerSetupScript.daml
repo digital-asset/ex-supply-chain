@@ -7,6 +7,7 @@ daml 1.2
 module DA.RefApps.SupplyChain.LedgerSetupScript where
 
 import DA.Date
+import DA.Optional
 
 import DA.RefApps.SupplyChain.Relationship
 import DA.RefApps.SupplyChain.Types
@@ -23,16 +24,17 @@ data SetupData = SetupData with
     inventoryW2P1Cid: ContractId InventoryItem
     inventoryW2P2Cid: ContractId InventoryItem
 
--- Setup scenario to prepare the relationships and inventory
+-- Setup script to prepare the relationships and inventory
 initialize: Script ()
 initialize = do
-  buyer <- allocateParty "Buyer"
-  seller <- allocateParty "Seller"
-  supplier <- allocateParty "Supplier"
-  warehouse1 <- allocateParty "Warehouse1"
-  warehouse2 <- allocateParty "Warehouse2"
-  transportComp1 <- allocateParty "TransportCompany1"
-  transportComp2 <- allocateParty "TransportCompany2"
+  let
+    buyer = fromSome (partyFromText "Buyer")
+    seller = fromSome (partyFromText "Seller")
+    supplier = fromSome (partyFromText "Supplier")
+    warehouse1 = fromSome (partyFromText "Warehouse1")
+    warehouse2 = fromSome (partyFromText "Warehouse2")
+    transportComp1 = fromSome (partyFromText "TransportCompany1")
+    transportComp2 = fromSome (partyFromText "TransportCompany2")
 
   -- Predefined data
   let
@@ -80,7 +82,7 @@ initialize = do
         quantity = 100
         unitPrice = 65.0
 
-  -- TODO: Do we need this? What is there equivalent replacement?
+  -- TODO: Do we need this? What is the equivalent replacement?
   -- passToDate $ date 2019 Jun 3
 
-  pure()
+  pure ()
