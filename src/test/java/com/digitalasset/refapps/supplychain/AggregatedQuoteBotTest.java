@@ -17,7 +17,6 @@ import da.refapps.supplychain.aggregate.AggregatedQuoteTrigger;
 import da.refapps.supplychain.delivery.DeliveryPlan;
 import da.refapps.supplychain.quoterequest.QuoteRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.time.Clock;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,7 @@ public class AggregatedQuoteBotTest {
   private static final String PARTY = "TESTPARTY";
 
   CommandsAndPendingSetBuilder.Factory commandBuilder =
-      CommandsAndPendingSetBuilder.factory("appId", Clock::systemUTC, Duration.ofSeconds(5));
+      CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
   private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
   private AggregatedQuoteBot bot = new AggregatedQuoteBot(commandBuilder, PARTY);
 

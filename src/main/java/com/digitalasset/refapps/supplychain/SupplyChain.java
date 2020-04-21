@@ -60,7 +60,7 @@ public class SupplyChain {
 
     Duration mrt = Duration.ofSeconds(10);
     CommandsAndPendingSetBuilder.Factory commandBuilderFactory =
-        CommandsAndPendingSetBuilder.factory(APPLICATION_ID, clock::get, mrt);
+        CommandsAndPendingSetBuilder.factory(APPLICATION_ID, mrt);
 
     AggregatedQuoteBot aggregatedQuoteBot =
         new AggregatedQuoteBot(commandBuilderFactory, SELLER_PARTY);

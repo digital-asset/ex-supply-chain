@@ -4,7 +4,10 @@
  */
 package com.digitalasset.refapps.supplychain;
 
-import static com.digitalasset.testing.Dsl.*;
+import static com.digitalasset.testing.Dsl.list;
+import static com.digitalasset.testing.Dsl.party;
+import static com.digitalasset.testing.Dsl.record;
+import static com.digitalasset.testing.Dsl.text;
 
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
@@ -15,11 +18,21 @@ import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.supplychain.aggregate.AggregatedQuote;
 import da.refapps.supplychain.aggregate.AggregatedQuotePending;
-import da.refapps.supplychain.delivery.*;
+import da.refapps.supplychain.delivery.Delivery;
+import da.refapps.supplychain.delivery.DeliveryInstruction;
+import da.refapps.supplychain.delivery.DeliveryPayment;
+import da.refapps.supplychain.delivery.DeliverySupplierPayment;
+import da.refapps.supplychain.delivery.PickUpRequest;
+import da.refapps.supplychain.delivery.TransportPending;
 import da.refapps.supplychain.order.ConfirmedOrder;
 import da.refapps.supplychain.quote.QuoteForBuyer;
 import da.refapps.supplychain.quote.TransportQuoteItem;
-import da.refapps.supplychain.quoterequest.*;
+import da.refapps.supplychain.quoterequest.QuoteRequest;
+import da.refapps.supplychain.quoterequest.QuoteRequestAccepted;
+import da.refapps.supplychain.quoterequest.QuoteRequestSupplyInvitation;
+import da.refapps.supplychain.quoterequest.SupplyRequest;
+import da.refapps.supplychain.quoterequest.TransportQuoteRequest;
+import da.refapps.supplychain.quoterequest.TransportQuoteRequestPending;
 import da.refapps.supplychain.relationship.BuyerSellerRelationship;
 import da.refapps.supplychain.types.OrderedProduct;
 import da.refapps.supplychain.types.WarehouseProduct;
@@ -32,7 +45,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
-import org.junit.*;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExternalResource;
 
 public class SupplychainIT {

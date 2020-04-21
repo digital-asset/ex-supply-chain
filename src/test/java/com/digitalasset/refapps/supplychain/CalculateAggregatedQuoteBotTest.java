@@ -22,7 +22,6 @@ import da.refapps.supplychain.quoterequest.QuoteRequest;
 import da.refapps.supplychain.types.WarehouseProduct;
 import da.types.Tuple2;
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +35,7 @@ public class CalculateAggregatedQuoteBotTest {
   private static final String PARTY = "TESTPARTY";
 
   CommandsAndPendingSetBuilder.Factory commandBuilder =
-      CommandsAndPendingSetBuilder.factory("appId", Clock::systemUTC, Duration.ofSeconds(5));
+      CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
   private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
   private CalculateAggregatedQuoteBot bot = new CalculateAggregatedQuoteBot(commandBuilder, PARTY);
 

@@ -18,7 +18,6 @@ import da.refapps.supplychain.lock.TransportCommitment;
 import da.refapps.supplychain.payment.PaymentRequest;
 import da.refapps.supplychain.quoterequest.QuoteRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class DeliveryCompleteBotTest {
   private static final String PARTY = "TESTPARTY";
 
   CommandsAndPendingSetBuilder.Factory commandBuilder =
-      CommandsAndPendingSetBuilder.factory("appId", Clock::systemUTC, Duration.ofSeconds(5));
+      CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
   private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
   private DeliveryCompleteBot bot = new DeliveryCompleteBot(commandBuilder, PARTY);
 

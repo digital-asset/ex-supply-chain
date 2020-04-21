@@ -17,7 +17,6 @@ import da.refapps.supplychain.inventory.InventoryItem;
 import da.refapps.supplychain.quoterequest.InventoryQuoteRequestBotTrigger;
 import da.refapps.supplychain.types.OrderedProduct;
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +29,7 @@ public class InventoryQuoteRequestBotTest {
   private static final String PARTY = "TESTPARTY";
 
   CommandsAndPendingSetBuilder.Factory commandBuilder =
-      CommandsAndPendingSetBuilder.factory("appId", Clock::systemUTC, Duration.ofSeconds(5));
+      CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
   private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
   private InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
 
