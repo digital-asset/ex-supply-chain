@@ -42,8 +42,8 @@ public class SupplychainIT {
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/supplychain.dar");
   private static final Integer sandboxPort = 6865;
   private static final int WAIT_TIMEOUT = 20;
-  private static final String TEST_MODULE = "DA.RefApps.SupplyChain.Scenarios";
-  private static final String TEST_SCENARIO = "setup";
+  private static final String TEST_MODULE = "DA.RefApps.SupplyChain.LedgerSetupScript";
+  private static final String TEST_SCRIPT = "initialize";
 
   private static Party BUYER_PARTY = new Party("Buyer");
   private static Party SELLER_PARTY = new Party("Seller");
@@ -60,7 +60,7 @@ public class SupplychainIT {
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
           .module(TEST_MODULE)
-          .scenario(TEST_SCENARIO)
+          .startScript(TEST_SCRIPT)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
           .setupAppCallback(SupplyChain::runBots)
           .build();
