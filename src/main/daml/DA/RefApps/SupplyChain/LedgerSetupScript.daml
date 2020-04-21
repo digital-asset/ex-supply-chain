@@ -1,0 +1,86 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+module DA.RefApps.SupplyChain.LedgerSetupScript where
+
+import DA.Date
+
+import DA.RefApps.SupplyChain.Relationship
+import DA.RefApps.SupplyChain.Types
+import DA.RefApps.SupplyChain.Inventory
+
+import Daml.Script
+
+data SetupData = SetupData with
+    buyerRoleCid: ContractId BuyerSellerRelationship
+    product01: OrderedProduct
+    product02: OrderedProduct
+    inventoryW1P1Cid: ContractId InventoryItem
+    inventoryW1P2Cid: ContractId InventoryItem
+    inventoryW2P1Cid: ContractId InventoryItem
+    inventoryW2P2Cid: ContractId InventoryItem
+
+-- Setup scenario to prepare the relationships and inventory
+initialize: Script ()
+initialize = do
+  buyer <- allocateParty "Buyer"
+  seller <- allocateParty "Seller"
+  supplier <- allocateParty "Supplier"
+  warehouse1 <- allocateParty "Warehouse1"
+  warehouse2 <- allocateParty "Warehouse2"
+  transportComp1 <- allocateParty "TransportCompany1"
+  transportComp2 <- allocateParty "TransportCompany2"
+
+  -- Predefined data
+  let
+    product01 = OrderedProduct "Product 1" 100 (date 2019 Dec 1) (date 2019 Dec 10)
+    product02 = OrderedProduct "Product 2" 10 (date 2019 Dec 10) (date 2019 Dec 14)
+    buyerAddress = "1234, Vice City, Arkham street 13"
+
+  -- Market setup
+  buyerSellerRelInvitation <- submit buyer do
+    createCmd $ BuyerSellerRelationshipInvitation buyer buyerAddress seller
+  buyerRole <- submit seller do
+    exerciseCmd buyerSellerRelInvitation BuyerSellerRelationshipInvitation_Accept
+
+  inventoryW1P1Cid <- submit warehouse1 do
+    createCmd InventoryItem
+      with
+        warehouse = warehouse1
+        supplier = supplier
+        productName = product01.productName
+        quantity = 50
+        unitPrice = 55.0
+  inventoryW1P2Cid <- submit warehouse1 do
+    createCmd InventoryItem
+      with
+        warehouse = warehouse1
+        supplier = supplier
+        productName = product02.productName
+        quantity = 100
+        unitPrice = 60.0
+
+  inventoryW2P1Cid <- submit warehouse2 do
+    createCmd InventoryItem
+      with
+        warehouse = warehouse2
+        supplier = supplier
+        productName = product01.productName
+        quantity = 200
+        unitPrice = 58.0
+  inventoryW2P2Cid <- submit warehouse2 do
+    createCmd InventoryItem
+      with
+        warehouse = warehouse2
+        supplier = supplier
+        productName = product02.productName
+        quantity = 100
+        unitPrice = 65.0
+
+  -- TODO: Do we need this? What is there equivalent replacement?
+  -- passToDate $ date 2019 Jun 3
+
+  pure()
