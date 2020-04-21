@@ -1,0 +1,5 @@
+*.log
+target
+.idea
+*.iml
+.daml
