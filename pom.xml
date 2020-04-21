@@ -189,6 +189,10 @@
                     <excludes>
                         <exclude>**/README</exclude>
                         <exclude>src/license/*</exclude>
+                        <exclude>**/*.hi</exclude>
+                        <exclude>**/*.hie</exclude>
+                        <exclude>**/*.log</exclude>
+                        <exclude>**/.daml/package-database/**/*.*</exclude>
                     </excludes>
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
