@@ -27,9 +27,6 @@ public class SupplyChain {
   private static final String WAREHOUSE1 = "Warehouse1";
   private static final String WAREHOUSE2 = "Warehouse2";
 
-  private static final AtomicReference<Clock> clock =
-      new AtomicReference<>(Clock.fixed(Instant.ofEpochSecond(0), ZoneId.systemDefault()));
-
   public static void main(String[] args) throws InterruptedException {
     CliOptions options = CliOptions.parseArgs(args);
 
@@ -47,14 +44,6 @@ public class SupplyChain {
   public static void runBots(DamlLedgerClient client) {
     waitForSandbox(client);
     logger.info("Connected to DAML Sandbox.");
-
-    // We create a Flowable<Instant> clockFlowable to set the time
-    client
-        .getTimeClient()
-        .getTime()
-        .doOnNext(ts -> logger.info("Received time change {}", ts))
-        .doOnNext(ts -> clock.set(Clock.fixed(ts, ZoneId.systemDefault())))
-        .subscribe();
 
     Duration mrt = Duration.ofSeconds(10);
     CommandsAndPendingSetBuilder.Factory commandBuilderFactory =
