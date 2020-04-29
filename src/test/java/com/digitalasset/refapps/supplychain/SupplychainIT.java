@@ -81,14 +81,13 @@ public class SupplychainIT {
 
   @Test(expected = TimeoutException.class)
   public void testPartyIsCorrect() {
-    BuyerSellerRelationship.ContractId cidOfBuyerSellerRelationship =
-        sandbox
-            .getLedgerAdapter()
-            .getCreatedContractId(
-                BUYER_PARTY,
-                BuyerSellerRelationship.TEMPLATE_ID,
-                record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
-                BuyerSellerRelationship.ContractId::new);
+    sandbox
+        .getLedgerAdapter()
+        .getCreatedContractId(
+            BUYER_PARTY,
+            BuyerSellerRelationship.TEMPLATE_ID,
+            record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
+            BuyerSellerRelationship.ContractId::new);
   }
 
   @Test
@@ -292,6 +291,7 @@ public class SupplychainIT {
     ledgerAdapter.exerciseChoice(
         transportCompany,
         deliveryInstructionWithCid.contractId.exerciseDeliveryInstruction_PickUp());
+    //noinspection OptionalGetWithoutIsPresent
     Party warehouse =
         deliveryInstructionWithCid
             .record

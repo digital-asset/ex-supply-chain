@@ -98,7 +98,7 @@ public class SupplyChain {
         client.connect();
         connected = true;
       } catch (Exception _ignored) {
-        logger.info(String.format("Connecting to sandbox..."));
+        logger.info("Connecting to sandbox...");
         try {
           Thread.sleep(1000);
         } catch (InterruptedException ignored) {

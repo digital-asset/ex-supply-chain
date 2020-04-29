@@ -54,7 +54,7 @@ public class CalculateAggregatedQuoteBotTest {
         new CalculateAggregatedQuoteBotTrigger(
             wfId, "supplier", "buyer", "address", "seller", Collections.emptyList());
 
-    Tuple2<WarehouseProduct, TransportQuoteItem> item = new Tuple2(null, null);
+    Tuple2<WarehouseProduct, TransportQuoteItem> item = new Tuple2<>(null, null);
 
     TransportQuote tq = new TransportQuote(wfId, "transportCompany", "supplier", item);
     TransportQuote tq2 = new TransportQuote(otherWfId, "transportCompany", "supplier", item);

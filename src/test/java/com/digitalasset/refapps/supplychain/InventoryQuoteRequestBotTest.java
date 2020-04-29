@@ -30,12 +30,11 @@ public class InventoryQuoteRequestBotTest {
 
   final CommandsAndPendingSetBuilder.Factory commandBuilder =
       CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
-  private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
   private final InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
 
   @Test
   public void calculateCommands() {
-    ledgerView =
+    LedgerViewFlowable.LedgerTestView<Template> ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
 
