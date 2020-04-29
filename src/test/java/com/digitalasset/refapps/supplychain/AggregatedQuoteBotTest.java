@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -16,7 +16,6 @@ import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
 import da.refapps.supplychain.aggregate.AggregatedQuoteTrigger;
 import da.refapps.supplychain.delivery.DeliveryPlan;
 import da.refapps.supplychain.quoterequest.QuoteRequest;
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
@@ -29,14 +28,13 @@ public class AggregatedQuoteBotTest {
 
   private static final String PARTY = "TESTPARTY";
 
-  CommandsAndPendingSetBuilder.Factory commandBuilder =
+  final CommandsAndPendingSetBuilder.Factory commandBuilder =
       CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
-  private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
-  private AggregatedQuoteBot bot = new AggregatedQuoteBot(commandBuilder, PARTY);
+  private final AggregatedQuoteBot bot = new AggregatedQuoteBot(commandBuilder, PARTY);
 
   @Test
-  public void calculateCommands() throws InvocationTargetException, IllegalAccessException {
-    ledgerView =
+  public void calculateCommands() {
+    LedgerViewFlowable.LedgerTestView<Template> ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
 

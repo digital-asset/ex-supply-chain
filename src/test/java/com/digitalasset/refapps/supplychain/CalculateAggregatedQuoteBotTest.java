@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -34,14 +34,14 @@ public class CalculateAggregatedQuoteBotTest {
 
   private static final String PARTY = "TESTPARTY";
 
-  CommandsAndPendingSetBuilder.Factory commandBuilder =
+  final CommandsAndPendingSetBuilder.Factory commandBuilder =
       CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
-  private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
-  private CalculateAggregatedQuoteBot bot = new CalculateAggregatedQuoteBot(commandBuilder, PARTY);
+  private final CalculateAggregatedQuoteBot bot =
+      new CalculateAggregatedQuoteBot(commandBuilder, PARTY);
 
   @Test
   public void calculateCommands() {
-    ledgerView =
+    LedgerViewFlowable.LedgerTestView<Template> ledgerView =
         new LedgerViewFlowable.LedgerTestView(
             HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
 

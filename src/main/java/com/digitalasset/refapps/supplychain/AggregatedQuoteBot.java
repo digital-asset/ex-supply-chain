@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -20,7 +20,9 @@ import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
 import com.google.common.collect.Sets;
 import da.refapps.supplychain.aggregate.AggregatedQuoteTrigger;
 import io.reactivex.Flowable;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
 import org.slf4j.Logger;
 
 public class AggregatedQuoteBot {

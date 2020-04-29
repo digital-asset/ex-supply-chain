@@ -1,11 +1,10 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 package com.digitalasset.refapps.supplychain.util;
 
 import com.daml.ledger.javaapi.data.Template;
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -33,21 +32,6 @@ public class TemplateManager {
             C cc = type.cast(c);
             if (condition.test(cc)) {
               m.put(s, type.cast(c));
-            }
-          }
-        });
-    return m;
-  }
-
-  public static <C extends Template> Map<String, C> filterTemplatesWithCid(
-      Class<C> type, PMap<String, ?> contracts, Predicate<Map.Entry<String, C>> condition) {
-    HashMap<String, C> m = new HashMap<>();
-    contracts.forEach(
-        (s, c) -> {
-          if (type.isInstance(c)) {
-            C cc = type.cast(c);
-            if (condition.test(new AbstractMap.SimpleEntry<>(s, cc))) {
-              m.put(s, cc);
             }
           }
         });

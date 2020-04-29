@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -8,11 +8,7 @@ import com.daml.ledger.rxjava.DamlLedgerClient;
 import com.daml.ledger.rxjava.components.Bot;
 import com.digitalasset.refapps.supplychain.util.CliOptions;
 import com.digitalasset.refapps.supplychain.util.CommandsAndPendingSetBuilder;
-import java.time.Clock;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

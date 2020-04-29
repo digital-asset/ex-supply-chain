@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -33,7 +33,7 @@ public class CommandsAndPendingSetBuilder {
 
   public static class Factory {
     private final String applicationId;
-    private Duration mrtDuration;
+    private final Duration mrtDuration;
 
     public Factory(String applicationId, Duration mrtDuration) {
       this.applicationId = applicationId;
@@ -63,8 +63,8 @@ public class CommandsAndPendingSetBuilder {
   }
 
   public final class Builder {
-    private List<Command> commands = new ArrayList<>();
-    private Map<Identifier, PSet<String>> pendingContractIds = new HashMap<>();
+    private final List<Command> commands = new ArrayList<>();
+    private final Map<Identifier, PSet<String>> pendingContractIds = new HashMap<>();
 
     public void addCommand(Command cmd) {
       commands.add(cmd);

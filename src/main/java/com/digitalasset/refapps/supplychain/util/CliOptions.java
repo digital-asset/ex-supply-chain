@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -8,6 +8,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+// CLI parser requires non-fields for options.
+@SuppressWarnings({"PMD.DataClass", "FieldCanBeLocal", "FieldMayBeFinal", "CanBeFinal"})
 public class CliOptions {
   @Option(name = "-s", usage = "Sandbox host", metaVar = "SANDBOX_HOST")
   private String sandboxHost = "localhost";

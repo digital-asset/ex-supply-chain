@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -28,10 +28,10 @@ import org.pcollections.HashTreePMap;
 public class InventoryQuoteRequestBotTest {
   private static final String PARTY = "TESTPARTY";
 
-  CommandsAndPendingSetBuilder.Factory commandBuilder =
+  final CommandsAndPendingSetBuilder.Factory commandBuilder =
       CommandsAndPendingSetBuilder.factory("appId", Duration.ofSeconds(5));
   private LedgerViewFlowable.LedgerTestView<Template> ledgerView;
-  private InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
+  private final InventoryQuoteRequestBot bot = new InventoryQuoteRequestBot(commandBuilder, PARTY);
 
   @Test
   public void calculateCommands() {
@@ -61,45 +61,5 @@ public class InventoryQuoteRequestBotTest {
           assertTrue(exerciseCommand.isPresent());
           assertEquals("InventoryQuoteRequestBotTrigger_Accept", exerciseCommand.get().getChoice());
         });
-  }
-
-  public void calculateCommandsNoopOnWrongProduct() {
-    ledgerView =
-        new LedgerViewFlowable.LedgerTestView(
-            HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
-
-    // Delivery date: between LocalDate MIN and MAX
-    OrderedProduct product = new OrderedProduct("Product1", 100L, LocalDate.MIN, LocalDate.MAX);
-    InventoryQuoteRequestBotTrigger trigger1 =
-        new InventoryQuoteRequestBotTrigger("workflow1", "warehouse1", "supplier", product);
-    InventoryItem inventoryItem =
-        new InventoryItem("warehouse1", "supplier", "Product2", 100L, BigDecimal.ONE);
-
-    ledgerView =
-        ledgerView
-            .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
-            .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
-
-    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
-  }
-
-  public void calculateCommandsNoopOnWrongWarehouse() {
-    ledgerView =
-        new LedgerViewFlowable.LedgerTestView(
-            HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
-
-    // Delivery date: between LocalDate MIN and MAX
-    OrderedProduct product = new OrderedProduct("Product1", 100L, LocalDate.MIN, LocalDate.MAX);
-    InventoryQuoteRequestBotTrigger trigger1 =
-        new InventoryQuoteRequestBotTrigger("workflow1", "warehouse1", "supplier", product);
-    InventoryItem inventoryItem =
-        new InventoryItem("warehouse2", "supplier", "Product1", 100L, BigDecimal.ONE);
-
-    ledgerView =
-        ledgerView
-            .addActiveContract(InventoryQuoteRequestBotTrigger.TEMPLATE_ID, "cid-01", trigger1)
-            .addActiveContract(InventoryItem.TEMPLATE_ID, "cid-02", inventoryItem);
-
-    bot.calculateCommands(ledgerView).isEmpty().test().assertValue(true);
   }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -21,7 +21,10 @@ import com.google.common.collect.Sets;
 import da.refapps.supplychain.inventory.InventoryItem;
 import da.refapps.supplychain.quoterequest.InventoryQuoteRequestBotTrigger;
 import io.reactivex.Flowable;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 
 public class InventoryQuoteRequestBot {

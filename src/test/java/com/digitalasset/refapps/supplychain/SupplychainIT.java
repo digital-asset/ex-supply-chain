@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -51,27 +51,23 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 
 public class SupplychainIT {
-  private static final BuyerSellerRelationship.ContractId CID_OF_BUYER_SELLER_RELATIONSHIP =
-      new BuyerSellerRelationship.ContractId("#1:1");
 
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/supplychain.dar");
-  private static final Integer sandboxPort = 6865;
-  private static final int WAIT_TIMEOUT = 20;
   private static final String TEST_MODULE = "DA.RefApps.SupplyChain.LedgerSetupScript";
   private static final String TEST_SCRIPT = "initialize";
 
-  private static Party BUYER_PARTY = new Party("Buyer");
-  private static Party SELLER_PARTY = new Party("Seller");
-  private static Party SUPPLIER_PARTY = new Party("Supplier");
-  private static Party WAREHOUSE1_PARTY = new Party("Warehouse1");
-  private static Party WAREHOUSE2_PARTY = new Party("Warehouse2");
-  private static Party TRANSPORT1_PARTY = new Party("TransportCompany1");
-  private static Party TRANSPORT2_PARTY = new Party("TransportCompany2");
-  private static Text BUYER_ADDRESS = new Text("1234, Vice City, Arkham street 13");
-  private static Text WAREHOUSE1_ADDRESS = new Text("1345, Liberty City, Fleet street 1");
-  private static Text WAREHOUSE2_ADDRESS = new Text("2456, San Andreas, Main street 9");
+  private static final Party BUYER_PARTY = new Party("Buyer");
+  private static final Party SELLER_PARTY = new Party("Seller");
+  private static final Party SUPPLIER_PARTY = new Party("Supplier");
+  private static final Party WAREHOUSE1_PARTY = new Party("Warehouse1");
+  private static final Party WAREHOUSE2_PARTY = new Party("Warehouse2");
+  private static final Party TRANSPORT1_PARTY = new Party("TransportCompany1");
+  private static final Party TRANSPORT2_PARTY = new Party("TransportCompany2");
+  private static final Text BUYER_ADDRESS = new Text("1234, Vice City, Arkham street 13");
+  private static final Text WAREHOUSE1_ADDRESS = new Text("1345, Liberty City, Fleet street 1");
+  private static final Text WAREHOUSE2_ADDRESS = new Text("2456, San Andreas, Main street 9");
 
-  private static Sandbox sandbox =
+  private static final Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
           .module(TEST_MODULE)
@@ -84,7 +80,7 @@ public class SupplychainIT {
   @Rule public ExternalResource sandboxRule = sandbox.getRule();
 
   @Test(expected = TimeoutException.class)
-  public void testPartyIsCorrect() throws IOException {
+  public void testPartyIsCorrect() {
     BuyerSellerRelationship.ContractId cidOfBuyerSellerRelationship =
         sandbox
             .getLedgerAdapter()
@@ -155,22 +151,22 @@ public class SupplychainIT {
             Lists.newArrayList(TRANSPORT1_PARTY.getValue(), TRANSPORT2_PARTY.getValue())));
     WarehouseProduct warehouseProduct1 =
         new WarehouseProduct(
-            "Product 1", WAREHOUSE1_PARTY.getValue(), WAREHOUSE1_ADDRESS.getValue(), 100l);
+            "Product 1", WAREHOUSE1_PARTY.getValue(), WAREHOUSE1_ADDRESS.getValue(), 100L);
     WarehouseProduct warehouseProduct2 =
         new WarehouseProduct(
-            "Product 1", WAREHOUSE2_PARTY.getValue(), WAREHOUSE2_ADDRESS.getValue(), 100l);
+            "Product 1", WAREHOUSE2_PARTY.getValue(), WAREHOUSE2_ADDRESS.getValue(), 100L);
     WarehouseProductWithDates warehouseProductWithDates1 =
         new WarehouseProductWithDates(warehouseProduct1, date1, date2);
     WarehouseProductWithDates warehouseProductWithDates2 =
         new WarehouseProductWithDates(warehouseProduct2, date1, date2);
     TransportQuoteItem transportQuoteItem11 =
-        new TransportQuoteItem(25l, new BigDecimal(25), date1, date2);
+        new TransportQuoteItem(25L, new BigDecimal(25), date1, date2);
     TransportQuoteItem transportQuoteItem12 =
-        new TransportQuoteItem(50l, new BigDecimal(50), date1, date2);
+        new TransportQuoteItem(50L, new BigDecimal(50), date1, date2);
     TransportQuoteItem transportQuoteItem21 =
-        new TransportQuoteItem(50l, new BigDecimal(100), date1, date2);
+        new TransportQuoteItem(50L, new BigDecimal(100), date1, date2);
     TransportQuoteItem transportQuoteItem22 =
-        new TransportQuoteItem(100l, new BigDecimal(200), date1, date2);
+        new TransportQuoteItem(100L, new BigDecimal(200), date1, date2);
     TransportQuoteRequest.ContractId transportQuoteReq11 =
         ledgerAdapter.getCreatedContractId(
             TRANSPORT1_PARTY,
