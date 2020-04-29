@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import da.refapps.supplychain.inventory.InventoryItem;
 import da.refapps.supplychain.quote.InventoryQuote;
 import da.refapps.supplychain.quote.TransportQuote;
+import da.refapps.supplychain.quote.TransportQuote.ContractId;
 import da.refapps.supplychain.quoterequest.CalculateAggregatedQuoteBotTrigger;
 import io.reactivex.Flowable;
 import java.util.ArrayList;
@@ -78,8 +79,8 @@ public class CalculateAggregatedQuoteBot {
                   TransportQuote.class,
                   ledgerView.getContracts(TransportQuote.TEMPLATE_ID),
                   transpQuote -> transpQuote.workflowId.equals(workflowId))
-              .entrySet().stream()
-              .map(invItemRes -> new TransportQuote.ContractId(invItemRes.getKey()))
+              .keySet().stream()
+              .map(ContractId::new)
               .collect(Collectors.toList());
       List<Map.Entry<String, InventoryQuote>> inventoryQuotes =
           new ArrayList<>(
@@ -97,8 +98,8 @@ public class CalculateAggregatedQuoteBot {
                   InventoryItem.class,
                   ledgerView.getContracts(InventoryItem.TEMPLATE_ID),
                   invItem -> isInventoryItemAmongInvQuotes(inventoryQuotes, invItem))
-              .entrySet().stream()
-              .map(invItemRes -> new InventoryItem.ContractId(invItemRes.getKey()))
+              .keySet().stream()
+              .map(InventoryItem.ContractId::new)
               .collect(Collectors.toList());
 
       builder.addCommand(
