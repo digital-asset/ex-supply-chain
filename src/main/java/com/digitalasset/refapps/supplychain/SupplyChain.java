@@ -12,7 +12,6 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,7 @@ public class SupplyChain {
     CliOptions options = CliOptions.parseArgs(args);
 
     DamlLedgerClient client =
-        DamlLedgerClient.forHostWithLedgerIdDiscovery(
-            options.getSandboxHost(), options.getSandboxPort(), Optional.empty());
+        DamlLedgerClient.newBuilder(options.getSandboxHost(), options.getSandboxPort()).build();
     logger.info(
         "Waiting for DAML Sandbox on {}:{}", options.getSandboxHost(), options.getSandboxPort());
     runBots(client);
