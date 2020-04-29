@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
-import org.pcollections.HashTreePMap;
 
 public class CalculateAggregatedQuoteBotTest {
 
@@ -41,9 +40,7 @@ public class CalculateAggregatedQuoteBotTest {
 
   @Test
   public void calculateCommands() {
-    LedgerViewFlowable.LedgerTestView<Template> ledgerView =
-        new LedgerViewFlowable.LedgerTestView(
-            HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
+    LedgerViewFlowable.LedgerTestView<Template> ledgerView = Helpers.emptyLedgerTestView();
 
     QuoteRequest.ContractId quoteId = new QuoteRequest.ContractId("Q1");
     String wfId = quoteId.toString();

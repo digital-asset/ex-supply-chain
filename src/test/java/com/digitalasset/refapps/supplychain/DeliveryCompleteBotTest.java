@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.Test;
-import org.pcollections.HashTreePMap;
 
 public class DeliveryCompleteBotTest {
 
@@ -34,9 +33,7 @@ public class DeliveryCompleteBotTest {
 
   @Test
   public void calculateCommands() {
-    LedgerViewFlowable.LedgerTestView<Template> ledgerView =
-        new LedgerViewFlowable.LedgerTestView(
-            HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty(), HashTreePMap.empty());
+    LedgerViewFlowable.LedgerTestView<Template> ledgerView = Helpers.emptyLedgerTestView();
 
     TransportCommitment.ContractId lockedCap1 = new TransportCommitment.ContractId("cid-01");
     TransportCommitment.ContractId lockedCap2 = new TransportCommitment.ContractId("cid-02");
