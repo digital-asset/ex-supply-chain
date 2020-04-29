@@ -9,7 +9,7 @@ services:
     image: digitalasset/supplychain-sandbox:0.1.0
     build:
       context: .
-      dockerfile: Dockerfile-sandbox
+      dockerfile: sandbox.Dockerfile
     ports:
       - "127.0.0.1:6865:6865"
       - "127.0.0.1:7500:7500"
@@ -17,7 +17,7 @@ services:
     image: digitalasset/supplychain-bots:0.1.0
     build:
       context: .
-      dockerfile: Dockerfile-bots
+      dockerfile: bots.Dockerfile
     depends_on:
       - "supplychain-sandbox"
     environment:

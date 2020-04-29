@@ -196,6 +196,7 @@
                     </excludes>
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
+                        <Dockerfile>SCRIPT_STYLE</Dockerfile>
                     </mapping>
                 </configuration>
                 <executions>
