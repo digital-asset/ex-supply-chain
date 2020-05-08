@@ -11,6 +11,7 @@ WORKDIR /home/daml/
 
 COPY daml.yaml .
 COPY src/main/daml ./src/main/daml
+COPY ui-backend.conf frontend-config.js /home/daml/
 
 FROM source
 
