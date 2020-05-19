@@ -18,6 +18,7 @@ import DA.RefApps.SupplyChain.Lock
 import DA.RefApps.SupplyChain.Delivery
 import DA.RefApps.SupplyChain.Aggregate
 
+transportCommitmentHelper : WorkflowId -> Text -> Date -> Scenario (ContractId PaymentRequest, ContractId TransportCommitment)
 transportCommitmentHelper (workflowId: WorkflowId) (productName: Text) (delivery: Date) = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"
@@ -44,6 +45,7 @@ transportCommitmentHelper (workflowId: WorkflowId) (productName: Text) (delivery
 
   return (transportPayReq, lockTrans)
 
+lockedInventoryItemHelper : WorkflowId -> Text -> Scenario (ContractId PaymentRequest, ContractId LockedInventoryItem)
 lockedInventoryItemHelper (workflowId: WorkflowId) (productName: Text) = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"
@@ -72,6 +74,7 @@ lockedInventoryItemHelper (workflowId: WorkflowId) (productName: Text) = scenari
   return (warehousePayReq, lockedInv)
 
 
+marginTest : Scenario ()
 marginTest = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"
@@ -149,6 +152,7 @@ marginTest = scenario do
 
   return ()
 
+paymentTest : Scenario ()
 paymentTest = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"

@@ -21,3 +21,7 @@ dependencies:
   - daml-prim
   - daml-stdlib
   - daml-script
+  - daml-trigger
+build-options:
+  - '--ghc-option'
+  - '-Werror'

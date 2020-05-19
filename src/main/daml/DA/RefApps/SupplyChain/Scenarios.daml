@@ -28,6 +28,7 @@ data SetupData = SetupData with
     inventoryW2P2Cid: ContractId InventoryItem
 
 -- Setup scenario to prepare the relationships and inventory
+setup : Scenario SetupData
 setup = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"
@@ -89,6 +90,7 @@ setup = scenario do
     buyerRoleCid = buyerRole, ..
 
 -- Scenario to walk through the complete happy path of this supply chain ref app
+fullScenario : Scenario ()
 fullScenario = scenario do
   buyer <- getParty "Buyer"
   seller <- getParty "Seller"
