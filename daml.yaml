@@ -25,3 +25,5 @@ dependencies:
 build-options:
   - '--ghc-option'
   - '-Werror'
+  - '--ghc-option'
+  - '-Wunused-binds'

@@ -33,8 +33,6 @@ initialize = do
     supplier = fromSome (partyFromText "Supplier")
     warehouse1 = fromSome (partyFromText "Warehouse1")
     warehouse2 = fromSome (partyFromText "Warehouse2")
-    transportComp1 = fromSome (partyFromText "TransportCompany1")
-    transportComp2 = fromSome (partyFromText "TransportCompany2")
 
   -- Predefined data
   let
