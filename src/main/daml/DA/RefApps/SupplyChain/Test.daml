@@ -105,7 +105,7 @@ marginTest = scenario do
     deliveryPlanItem1 = DeliveryPlanItem transportableWarehouseProduct1 lockTrans lockedInv supplierPayReq
     deliveryPlanItem2 = DeliveryPlanItem transportableWarehouseProduct2 lockTrans lockedInv supplierPayReq
     pricedWarehouseProduct1 = PricedWarehouseProduct warehouseProduct1 11.1 transportComp1 (date 2019 Jan 11)
-    pricedWarehouseProduct2 = PricedWarehouseProduct warehouseProduct2 23.0 transportComp1 (date 2019 Jan 11)
+    pricedWarehouseProduct2 = PricedWarehouseProduct warehouseProduct2 23.0 transportComp2 (date 2019 Jan 11)
 
   plan <- submit supplier do
     create DeliveryPlan with
