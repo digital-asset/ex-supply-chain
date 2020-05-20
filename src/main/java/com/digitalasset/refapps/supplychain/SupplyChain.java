@@ -45,15 +45,6 @@ public class SupplyChain {
     CommandsAndPendingSetBuilder.Factory commandBuilderFactory =
         CommandsAndPendingSetBuilder.factory(APPLICATION_ID, mrt);
 
-    AggregatedQuoteBot aggregatedQuoteBot =
-        new AggregatedQuoteBot(commandBuilderFactory, SELLER_PARTY);
-    Bot.wire(
-        APPLICATION_ID,
-        client,
-        aggregatedQuoteBot.transactionFilter,
-        aggregatedQuoteBot::calculateCommands,
-        aggregatedQuoteBot::getContractInfo);
-
     CalculateAggregatedQuoteBot calculateAggregatedQuoteBot =
         new CalculateAggregatedQuoteBot(commandBuilderFactory, SUPPLIER_PARTY);
     Bot.wire(
