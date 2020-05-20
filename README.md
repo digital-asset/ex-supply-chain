@@ -54,7 +54,11 @@ There are two options:
     daml start --sandbox-option --address=localhost
     ```
     The navigator will automatically open in new browser tab at http://localhost:7500.
-2. Start the automation logic by starting bots. Type:
+2. Once the sandbox has started start the automation logic by starting triggers. Type:
+    ```shell
+    scripts/startTriggers.sh localhost 6865 .daml/dist/*.dar
+    ```
+3. Start the automation logic by starting bots. Type:
     ```shell
     java -jar target/supplychain-0.0.1-SNAPSHOT.jar
     ```
