@@ -23,3 +23,13 @@ services:
     environment:
       - SANDBOX_HOST=supplychain-sandbox
       - SANDBOX_PORT=6865
+  supplychain-triggers:
+    image: digitalasset/supplychain-triggers:0.1.0
+    build:
+      context: .
+      dockerfile: triggers.Dockerfile
+    depends_on:
+      - "supplychain-sandbox"
+    environment:
+      - LEDGER_HOST=supplychain-sandbox
+      - LEDGER_PORT=6865
