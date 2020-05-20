@@ -34,7 +34,6 @@ aggregatedQuoteRule _party activeContracts _ _ () =
  where
   aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
 
--- Tests ---------------------------
 
 aggregatedQuoteTriggerTest: Scenario ()
 aggregatedQuoteTriggerTest = scenario do
