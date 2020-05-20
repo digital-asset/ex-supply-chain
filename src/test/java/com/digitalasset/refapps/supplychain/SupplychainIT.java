@@ -11,6 +11,8 @@ import static com.digitalasset.testing.Dsl.text;
 
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
+import com.digitalasset.refapps.supplychain.trigger.Builder;
+import com.digitalasset.refapps.supplychain.trigger.Trigger;
 import com.digitalasset.testing.junit4.Sandbox;
 import com.digitalasset.testing.ledger.DefaultLedgerAdapter;
 import com.digitalasset.testing.utils.ContractWithId;
@@ -49,6 +51,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 public class SupplychainIT {
 
@@ -77,7 +81,23 @@ public class SupplychainIT {
           .build();
 
   @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
-  @Rule public ExternalResource sandboxRule = sandbox.getRule();
+  private final Builder trigger =
+      Trigger.builder()
+          .ledgerPort(sandbox::getSandboxPort)
+          .dar(RELATIVE_DAR_PATH)
+          .ledgerHost("localhost");
+
+  @Rule
+  public TestRule sandboxRule =
+      RuleChain.outerRule(sandbox.getRule())
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:aggregatedQuoteTrigger",
+                  SELLER_PARTY));
+
+  private Trigger createTrigger(String triggerName, Party party) {
+    return trigger.triggerName(triggerName).party(party).build();
+  }
 
   @Test(expected = TimeoutException.class)
   public void testPartyIsCorrect() {
