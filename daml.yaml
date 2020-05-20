@@ -16,7 +16,6 @@ parties:
   - TransportCompany1
   - TransportCompany2
 version: 1.0.0
-exposed-modules: []
 dependencies:
   - daml-prim
   - daml-stdlib
