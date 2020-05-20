@@ -1,0 +1,86 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger where
+
+import Daml.Trigger
+import Daml.Trigger.Assert
+import DA.Assert
+import DA.Foldable hiding (length)
+import DA.Next.Map
+
+import DA.RefApps.SupplyChain.Aggregate
+import DA.RefApps.SupplyChain.Delivery
+
+aggregatedQuoteTrigger : Trigger ()
+aggregatedQuoteTrigger = Trigger
+  { initialize = const ()
+  , updateState = \_ _ _ -> ()
+  , rule = aggregatedQuoteRule
+  , registeredTemplates = RegisteredTemplates [
+      registeredTemplate @AggregatedQuoteTrigger
+    ]
+  , heartbeat = None
+  }
+
+aggregatedQuoteRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
+aggregatedQuoteRule _party activeContracts _ _ () =
+  forA_ aggregatedQuotes $ \(cid, _) ->
+    dedupExercise cid AggregatedQuoteTrigger_Execute
+ where
+  aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
+
+-- Tests ---------------------------
+
+aggregatedQuoteTriggerTest: Scenario ()
+aggregatedQuoteTriggerTest = scenario do
+  party <- getParty "party"
+  aggregatedQuoteTrigger1 <- submit party do
+    createAggregatedQuoteTrigger party
+  aggregatedQuoteTrigger2 <- submit party do
+    createAggregatedQuoteTrigger party
+  let acs = toACS aggregatedQuoteTrigger1 <> toACS aggregatedQuoteTrigger2
+
+  commands <- testTrigger aggregatedQuoteTrigger party acs
+
+  length commands === 2
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    aggregatedQuoteTrigger1 === cid
+    AggregatedQuoteTrigger_Execute === actualChoice
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    aggregatedQuoteTrigger2 === cid
+    AggregatedQuoteTrigger_Execute === actualChoice
+
+  where
+    testTrigger : Trigger () -> Party -> ACSBuilder -> Scenario [Command]
+    testTrigger trigger party acs =
+      flattenCommands <$> testRule trigger party acs empty ()
+
+    createAggregatedQuoteTrigger : Party -> Update (ContractId AggregatedQuoteTrigger)
+    createAggregatedQuoteTrigger party = do
+      let
+        workflowId = ""
+        supplier = party
+        buyer = party
+        seller = party
+        items = []
+        deliveryPlan = DeliveryPlan with
+          workflowId
+          supplier
+          buyer
+          seller
+          items
+        buyerAddress = ""
+      deliveryPlanCid <- create deliveryPlan
+      create AggregatedQuoteTrigger with
+        workflowId
+        supplier
+        buyer
+        buyerAddress
+        seller
+        items
+        deliveryPlanCid
