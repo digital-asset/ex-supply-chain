@@ -50,24 +50,6 @@ public class SupplyChain {
         calculateAggregatedQuoteBot.transactionFilter,
         calculateAggregatedQuoteBot::calculateCommands,
         calculateAggregatedQuoteBot::getContractInfo);
-
-    InventoryQuoteRequestBot inventoryQuoteRequestBot1 =
-        new InventoryQuoteRequestBot(commandBuilderFactory, WAREHOUSE1);
-    Bot.wire(
-        APPLICATION_ID,
-        client,
-        inventoryQuoteRequestBot1.transactionFilter,
-        inventoryQuoteRequestBot1::calculateCommands,
-        inventoryQuoteRequestBot1::getContractInfo);
-
-    InventoryQuoteRequestBot inventoryQuoteRequestBot2 =
-        new InventoryQuoteRequestBot(commandBuilderFactory, WAREHOUSE2);
-    Bot.wire(
-        APPLICATION_ID,
-        client,
-        inventoryQuoteRequestBot2.transactionFilter,
-        inventoryQuoteRequestBot2::calculateCommands,
-        inventoryQuoteRequestBot2::getContractInfo);
   }
 
   public static void waitForSandbox(DamlLedgerClient client) {

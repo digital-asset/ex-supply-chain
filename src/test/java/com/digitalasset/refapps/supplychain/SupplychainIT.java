@@ -95,7 +95,15 @@ public class SupplychainIT {
                   "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger", SELLER_PARTY))
           .around(
               createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger", SELLER_PARTY));
+                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger", SELLER_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
+                  WAREHOUSE1_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
+                  WAREHOUSE2_PARTY));
 
   private Trigger createTrigger(String triggerName, Party party) {
     return trigger.triggerName(triggerName).party(party).build();
