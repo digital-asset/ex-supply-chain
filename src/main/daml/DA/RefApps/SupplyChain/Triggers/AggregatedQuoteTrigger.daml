@@ -13,7 +13,6 @@ import DA.Next.Map
 
 import DA.RefApps.SupplyChain.Aggregate
 
-
 trigger : Trigger ()
 trigger = Trigger
   { initialize = const ()
