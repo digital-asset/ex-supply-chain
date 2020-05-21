@@ -1,0 +1,75 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger where
+
+import Daml.Trigger
+import Daml.Trigger.Assert
+import DA.Assert
+import DA.Foldable hiding (length)
+import DA.Next.Map
+
+import DA.RefApps.SupplyChain.Delivery
+import DA.RefApps.SupplyChain.Payment
+
+deliveryCompleteTrigger : Trigger ()
+deliveryCompleteTrigger = Trigger
+  { initialize = const ()
+  , updateState = \_ _ _ -> ()
+  , rule = deliveryCompleteRule
+  , registeredTemplates = RegisteredTemplates [
+      registeredTemplate @DeliveryComplete
+    ]
+  , heartbeat = None
+  }
+
+deliveryCompleteRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
+deliveryCompleteRule _party activeContracts _ _ () =
+  forA_ deliveryCompletes $ \(cid, _) ->
+    dedupExercise cid DeliveryComplete_Accept
+ where
+  deliveryCompletes = getContracts @DeliveryComplete activeContracts
+
+deliveryCompleteTriggerTest: Scenario ()
+deliveryCompleteTriggerTest = scenario do
+  party <- getParty "party"
+  deliveryComplete1 <- submit party do
+    createDeliveryComplete party
+  deliveryComplete2 <- submit party do
+    createDeliveryComplete party
+  let acs = toACS deliveryComplete1 <> toACS deliveryComplete2
+
+  commands <- testTrigger deliveryCompleteTrigger party acs
+
+  length commands === 2
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    deliveryComplete1 === cid
+    DeliveryComplete_Accept === actualChoice
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    deliveryComplete2 === cid
+    DeliveryComplete_Accept === actualChoice
+
+  where
+    testTrigger : Trigger () -> Party -> ACSBuilder -> Scenario [Command]
+    testTrigger trigger party acs =
+      flattenCommands <$> testRule trigger party acs empty ()
+
+    createDeliveryComplete : Party -> Update (ContractId DeliveryComplete)
+    createDeliveryComplete party = do
+      cid <- create PaymentRequest with
+        payer = party
+        payee = party
+        price = 1.0
+      create DeliveryComplete with
+        workflowId = ""
+        buyer = party
+        seller = party
+        transportCompany = party
+        transportCommitmentCid = coerceContractId cid -- https://discuss.daml.com/t/can-we-mock-contract-id-when-testing-triggers/519
+        buyerPaymentRequestCid = cid
+        supplierPaymentRequestCid = cid
+        warehousePaymentRequestCid = cid
