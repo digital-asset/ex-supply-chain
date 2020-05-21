@@ -16,6 +16,8 @@ import DA.Next.Map
 import DA.RefApps.SupplyChain.Delivery
 import DA.RefApps.SupplyChain.Payment
 
+import Test.DA.TriggerTestUtils
+
 deliveryCompleteTrigger : Trigger ()
 deliveryCompleteTrigger = Trigger
   { initialize = const ()
@@ -54,10 +56,6 @@ deliveryCompleteTriggerTest = scenario do
     DeliveryComplete_Accept === actualChoice
 
   where
-    testTrigger : Trigger () -> Party -> ACSBuilder -> Scenario [Command]
-    testTrigger trigger party acs =
-      flattenCommands <$> testRule trigger party acs empty ()
-
     createDeliveryComplete : Party -> Update (ContractId DeliveryComplete)
     createDeliveryComplete party = do
       cid <- create PaymentRequest with

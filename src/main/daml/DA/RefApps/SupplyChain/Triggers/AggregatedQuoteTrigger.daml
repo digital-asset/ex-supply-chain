@@ -16,6 +16,8 @@ import DA.Next.Map
 import DA.RefApps.SupplyChain.Aggregate
 import DA.RefApps.SupplyChain.Delivery
 
+import Test.DA.TriggerTestUtils
+
 aggregatedQuoteTrigger : Trigger ()
 aggregatedQuoteTrigger = Trigger
   { initialize = const ()
@@ -55,10 +57,6 @@ aggregatedQuoteTriggerTest = scenario do
     AggregatedQuoteTrigger_Execute === actualChoice
 
   where
-    testTrigger : Trigger () -> Party -> ACSBuilder -> Scenario [Command]
-    testTrigger trigger party acs =
-      flattenCommands <$> testRule trigger party acs empty ()
-
     createAggregatedQuoteTrigger : Party -> Update (ContractId AggregatedQuoteTrigger)
     createAggregatedQuoteTrigger party = do
       let
