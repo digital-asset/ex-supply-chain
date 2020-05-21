@@ -36,6 +36,7 @@ run_trigger() {
 }
 
 run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:aggregatedQuoteTrigger Seller &
+run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:deliveryCompleteTrigger Seller &
 
 sleep 2
 pids=$(jobs -p)

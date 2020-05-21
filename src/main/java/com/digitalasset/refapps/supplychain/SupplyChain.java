@@ -16,10 +16,7 @@ public class SupplyChain {
   public static final String APPLICATION_ID = "direct-asset-control";
   private static final Logger logger = LoggerFactory.getLogger(SupplyChain.class);
 
-  private static final String SELLER_PARTY = "Seller";
   private static final String SUPPLIER_PARTY = "Supplier";
-  //  private static final String TRANSPORT_PARTY1 = "TransportCompany1";
-  //  private static final String TRANSPORT_PARTY2 = "TransportCompany2";
   private static final String WAREHOUSE1 = "Warehouse1";
   private static final String WAREHOUSE2 = "Warehouse2";
 
@@ -53,15 +50,6 @@ public class SupplyChain {
         calculateAggregatedQuoteBot.transactionFilter,
         calculateAggregatedQuoteBot::calculateCommands,
         calculateAggregatedQuoteBot::getContractInfo);
-
-    DeliveryCompleteBot transportCapacityReleaseBot =
-        new DeliveryCompleteBot(commandBuilderFactory, SELLER_PARTY);
-    Bot.wire(
-        APPLICATION_ID,
-        client,
-        transportCapacityReleaseBot.transactionFilter,
-        transportCapacityReleaseBot::calculateCommands,
-        transportCapacityReleaseBot::getContractInfo);
 
     InventoryQuoteRequestBot inventoryQuoteRequestBot1 =
         new InventoryQuoteRequestBot(commandBuilderFactory, WAREHOUSE1);

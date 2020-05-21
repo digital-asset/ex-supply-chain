@@ -93,6 +93,10 @@ public class SupplychainIT {
           .around(
               createTrigger(
                   "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:aggregatedQuoteTrigger",
+                  SELLER_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:deliveryCompleteTrigger",
                   SELLER_PARTY));
 
   private Trigger createTrigger(String triggerName, Party party) {
