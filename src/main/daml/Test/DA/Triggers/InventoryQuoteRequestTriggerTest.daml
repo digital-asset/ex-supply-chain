@@ -23,11 +23,11 @@ requestWithMatchingItemsAreAllAcceptedTest: Scenario ()
 requestWithMatchingItemsAreAllAcceptedTest = scenario do
   party <- getParty "party"
   -- item1 is intentionally missing
-  item2 <- submit party do createItem party "Product 2"
-  item3 <- submit party do createItem party "Product 3"
-  request1 <- submit party do createRequest party "Product 1"
-  request2 <- submit party do createRequest party "Product 2"
-  request3 <- submit party do createRequest party "Product 3"
+  item2 <- submit party do create $ createItem party "Product 2"
+  item3 <- submit party do create $ createItem party "Product 3"
+  request1 <- submit party do create $ createRequest party "Product 1"
+  request2 <- submit party do create $ createRequest party "Product 2"
+  request3 <- submit party do create $ createRequest party "Product 3"
   let acs = foldMap toACS [request1, request2, request3]
          <> foldMap toACS [item2, item3]
 
@@ -43,19 +43,56 @@ requestWithMatchingItemsAreAllAcceptedTest = scenario do
     request3 === cid
     expectedChoice3 === actualChoice
 
-  where
-    createItem party productName =
-      create InventoryItem with
+predicateChecksBothProductnameAndWarehouseTest : Scenario ()
+predicateChecksBothProductnameAndWarehouseTest = scenario do
+  warehouse1 <- getParty "Warehouse1"
+  warehouse2 <- getParty "Warehouse2"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  dummyCid <- submit warehouse1 do create $ createItem warehouse1 productName1
+  let request11 = createRequest warehouse1 productName1
+  True === predicate request11 (dummyCid, createItem warehouse1 productName1)
+  False === predicate request11 (dummyCid, createItem warehouse2 productName1)
+  False === predicate request11 (dummyCid, createItem warehouse1 productName2)
+  False === predicate request11 (dummyCid, createItem warehouse2 productName2)
+
+itemMatchingRetrievesTest : Scenario ()
+itemMatchingRetrievesTest = scenario do
+  party <- getParty "Warehouse1"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  dummyCid <- submit party do create $ createItem party productName1
+  let request = createRequest party productName1
+  let items =
+        [ (dummyCid, createItem party productName2)
+        , (dummyCid, createItem party productName1)]
+  Some (dummyCid, createItem party productName1) === itemMatching request items
+
+itemMatchingReturnsNoneTest : Scenario ()
+itemMatchingReturnsNoneTest = scenario do
+  party <- getParty "Warehouse1"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  dummyCid <- submit party do create $ createItem party productName1
+  let request = createRequest party productName1
+  let items = [ (dummyCid, createItem party productName2) ]
+  None === itemMatching request items
+
+createRequest : Party -> Text -> InventoryQuoteRequestBotTrigger
+createRequest party productName = do
+  let sampleDate = date 1970 Jan 1
+  let product = OrderedProduct productName 0 sampleDate sampleDate
+  InventoryQuoteRequestBotTrigger with
+        workflowId = ""
         warehouse = party
         supplier = party
-        productName = productName
-        quantity = 0
-        unitPrice = 0.0
-    createRequest party productName = do
-      let sampleDate = date 1970 Jan 1
-      let product = OrderedProduct productName 0 sampleDate sampleDate
-      create InventoryQuoteRequestBotTrigger with
-            workflowId = ""
-            warehouse = party
-            supplier = party
-            product
+        product
+
+createItem : Party -> Text -> InventoryItem
+createItem party productName =
+  InventoryItem with
+    warehouse = party
+    supplier = party
+    productName = productName
+    quantity = 0
+    unitPrice = 0.0

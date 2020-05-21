@@ -29,7 +29,7 @@ trigger = Trigger
 triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
 triggerRule _party activeContracts _ _ () =
   forA_ inventoryQuoteRequests $ \(requestCid, request) ->
-    case itemMatching request of
+    case itemMatching request allInventoryItems of
       Some (inventoryItemCid, _) ->
         dedupExercise requestCid InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid
       None ->
@@ -37,8 +37,11 @@ triggerRule _party activeContracts _ _ () =
  where
   inventoryQuoteRequests = getContracts @InventoryQuoteRequestBotTrigger activeContracts
   allInventoryItems = getContracts @InventoryItem activeContracts
-  predicate : InventoryQuoteRequestBotTrigger -> (ContractId InventoryItem, InventoryItem) -> Bool
-  predicate request (_itemCid, item) = do
-    item.productName == request.product.productName
-      && item.warehouse == request.warehouse
-  itemMatching request = find (predicate request) allInventoryItems
+
+predicate : InventoryQuoteRequestBotTrigger -> (ContractId InventoryItem, InventoryItem) -> Bool
+predicate request (_itemCid, item) = do
+  item.productName == request.product.productName
+    && item.warehouse == request.warehouse
+
+itemMatching : InventoryQuoteRequestBotTrigger -> [(ContractId InventoryItem, InventoryItem)] -> Optional (ContractId InventoryItem, InventoryItem)
+itemMatching request items = find (predicate request) items
