@@ -1,0 +1,61 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module Test.DA.Triggers.InventoryQuoteRequestTriggerTest where
+
+import Daml.Trigger.Assert
+import DA.Assert
+import DA.Date
+import DA.Foldable hiding (length)
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.QuoteRequest
+import DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger
+import DA.RefApps.SupplyChain.Types
+
+import Test.DA.Triggers.TriggerTestUtils
+
+requestWithMatchingItemsAreAllAcceptedTest: Scenario ()
+requestWithMatchingItemsAreAllAcceptedTest = scenario do
+  party <- getParty "party"
+  -- item1 is intentionally missing
+  item2 <- submit party do createItem party "Product 2"
+  item3 <- submit party do createItem party "Product 3"
+  request1 <- submit party do createRequest party "Product 1"
+  request2 <- submit party do createRequest party "Product 2"
+  request3 <- submit party do createRequest party "Product 3"
+  let acs = foldMap toACS [request1, request2, request3]
+         <> foldMap toACS [item2, item3]
+
+  commands <- testTrigger trigger party acs
+
+  length commands === 2
+  let expectedChoice2 = InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid = item2
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    request2 === cid
+    expectedChoice2 === actualChoice
+  let expectedChoice3 = InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid = item3
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    request3 === cid
+    expectedChoice3 === actualChoice
+
+  where
+    createItem party productName =
+      create InventoryItem with
+        warehouse = party
+        supplier = party
+        productName = productName
+        quantity = 0
+        unitPrice = 0.0
+    createRequest party productName = do
+      let sampleDate = date 1970 Jan 1
+      let product = OrderedProduct productName 0 sampleDate sampleDate
+      create InventoryQuoteRequestBotTrigger with
+            workflowId = ""
+            warehouse = party
+            supplier = party
+            product
