@@ -8,15 +8,10 @@ daml 1.2
 module DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger where
 
 import Daml.Trigger
-import Daml.Trigger.Assert
-import DA.Assert
 import DA.Foldable hiding (length)
 import DA.Next.Map
 
 import DA.RefApps.SupplyChain.Delivery
-import DA.RefApps.SupplyChain.Payment
-
-import Test.DA.TriggerTestUtils
 
 trigger : Trigger ()
 trigger = Trigger
@@ -35,39 +30,3 @@ triggerRule _party activeContracts _ _ () =
     dedupExercise cid DeliveryComplete_Accept
  where
   deliveryCompletes = getContracts @DeliveryComplete activeContracts
-
-test: Scenario ()
-test = scenario do
-  party <- getParty "party"
-  deliveryComplete1 <- submit party do
-    createDeliveryComplete party
-  deliveryComplete2 <- submit party do
-    createDeliveryComplete party
-  let acs = toACS deliveryComplete1 <> toACS deliveryComplete2
-
-  commands <- testTrigger trigger party acs
-
-  length commands === 2
-  assertExerciseCmd commands $ \(cid, actualChoice) -> do
-    deliveryComplete1 === cid
-    DeliveryComplete_Accept === actualChoice
-  assertExerciseCmd commands $ \(cid, actualChoice) -> do
-    deliveryComplete2 === cid
-    DeliveryComplete_Accept === actualChoice
-
-  where
-    createDeliveryComplete : Party -> Update (ContractId DeliveryComplete)
-    createDeliveryComplete party = do
-      cid <- create PaymentRequest with
-        payer = party
-        payee = party
-        price = 1.0
-      create DeliveryComplete with
-        workflowId = ""
-        buyer = party
-        seller = party
-        transportCompany = party
-        transportCommitmentCid = coerceContractId cid -- https://discuss.daml.com/t/can-we-mock-contract-id-when-testing-triggers/519
-        buyerPaymentRequestCid = cid
-        supplierPaymentRequestCid = cid
-        warehousePaymentRequestCid = cid

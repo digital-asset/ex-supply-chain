@@ -5,7 +5,7 @@
 
 daml 1.2
 
-module Test.DA.TriggerTestUtils where
+module Test.DA.Triggers.TriggerTestUtils where
 
 import DA.Next.Map qualified as Maps
 import Daml.Trigger.Assert

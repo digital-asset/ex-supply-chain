@@ -1,0 +1,62 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module Test.DA.Triggers.AggregatedQuoteTriggerTest where
+
+import Daml.Trigger.Assert
+import DA.Assert
+
+import DA.RefApps.SupplyChain.Aggregate
+import DA.RefApps.SupplyChain.Delivery
+import DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger
+
+import Test.DA.Triggers.TriggerTestUtils
+
+allAggregatedQuotesExecuted: Scenario ()
+allAggregatedQuotesExecuted = scenario do
+  party <- getParty "party"
+  aggregatedQuoteTrigger1 <- submit party do
+    createAggregatedQuoteTrigger party
+  aggregatedQuoteTrigger2 <- submit party do
+    createAggregatedQuoteTrigger party
+  let acs = toACS aggregatedQuoteTrigger1 <> toACS aggregatedQuoteTrigger2
+
+  commands <- testTrigger trigger party acs
+
+  length commands === 2
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    aggregatedQuoteTrigger1 === cid
+    AggregatedQuoteTrigger_Execute === actualChoice
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    aggregatedQuoteTrigger2 === cid
+    AggregatedQuoteTrigger_Execute === actualChoice
+
+  where
+    createAggregatedQuoteTrigger : Party -> Update (ContractId AggregatedQuoteTrigger)
+    createAggregatedQuoteTrigger party = do
+      let
+        workflowId = ""
+        supplier = party
+        buyer = party
+        seller = party
+        items = []
+        deliveryPlan = DeliveryPlan with
+          workflowId
+          supplier
+          buyer
+          seller
+          items
+        buyerAddress = ""
+      deliveryPlanCid <- create deliveryPlan
+      create AggregatedQuoteTrigger with
+        workflowId
+        supplier
+        buyer
+        buyerAddress
+        seller
+        items
+        deliveryPlanCid

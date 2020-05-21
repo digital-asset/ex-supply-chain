@@ -8,15 +8,11 @@ daml 1.2
 module DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger where
 
 import Daml.Trigger
-import Daml.Trigger.Assert
-import DA.Assert
 import DA.Foldable hiding (length)
 import DA.Next.Map
 
 import DA.RefApps.SupplyChain.Aggregate
-import DA.RefApps.SupplyChain.Delivery
 
-import Test.DA.TriggerTestUtils
 
 trigger : Trigger ()
 trigger = Trigger
@@ -35,49 +31,3 @@ triggerRule _party activeContracts _ _ () =
     dedupExercise cid AggregatedQuoteTrigger_Execute
  where
   aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
-
-
-test: Scenario ()
-test = scenario do
-  party <- getParty "party"
-  aggregatedQuoteTrigger1 <- submit party do
-    createAggregatedQuoteTrigger party
-  aggregatedQuoteTrigger2 <- submit party do
-    createAggregatedQuoteTrigger party
-  let acs = toACS aggregatedQuoteTrigger1 <> toACS aggregatedQuoteTrigger2
-
-  commands <- testTrigger trigger party acs
-
-  length commands === 2
-  assertExerciseCmd commands $ \(cid, actualChoice) -> do
-    aggregatedQuoteTrigger1 === cid
-    AggregatedQuoteTrigger_Execute === actualChoice
-  assertExerciseCmd commands $ \(cid, actualChoice) -> do
-    aggregatedQuoteTrigger2 === cid
-    AggregatedQuoteTrigger_Execute === actualChoice
-
-  where
-    createAggregatedQuoteTrigger : Party -> Update (ContractId AggregatedQuoteTrigger)
-    createAggregatedQuoteTrigger party = do
-      let
-        workflowId = ""
-        supplier = party
-        buyer = party
-        seller = party
-        items = []
-        deliveryPlan = DeliveryPlan with
-          workflowId
-          supplier
-          buyer
-          seller
-          items
-        buyerAddress = ""
-      deliveryPlanCid <- create deliveryPlan
-      create AggregatedQuoteTrigger with
-        workflowId
-        supplier
-        buyer
-        buyerAddress
-        seller
-        items
-        deliveryPlanCid
