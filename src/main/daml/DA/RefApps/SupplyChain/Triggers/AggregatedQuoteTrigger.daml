@@ -18,27 +18,27 @@ import DA.RefApps.SupplyChain.Delivery
 
 import Test.DA.TriggerTestUtils
 
-aggregatedQuoteTrigger : Trigger ()
-aggregatedQuoteTrigger = Trigger
+trigger : Trigger ()
+trigger = Trigger
   { initialize = const ()
   , updateState = \_ _ _ -> ()
-  , rule = aggregatedQuoteRule
+  , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @AggregatedQuoteTrigger
     ]
   , heartbeat = None
   }
 
-aggregatedQuoteRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
-aggregatedQuoteRule _party activeContracts _ _ () =
+triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
+triggerRule _party activeContracts _ _ () =
   forA_ aggregatedQuotes $ \(cid, _) ->
     dedupExercise cid AggregatedQuoteTrigger_Execute
  where
   aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
 
 
-aggregatedQuoteTriggerTest: Scenario ()
-aggregatedQuoteTriggerTest = scenario do
+test: Scenario ()
+test = scenario do
   party <- getParty "party"
   aggregatedQuoteTrigger1 <- submit party do
     createAggregatedQuoteTrigger party
@@ -46,7 +46,7 @@ aggregatedQuoteTriggerTest = scenario do
     createAggregatedQuoteTrigger party
   let acs = toACS aggregatedQuoteTrigger1 <> toACS aggregatedQuoteTrigger2
 
-  commands <- testTrigger aggregatedQuoteTrigger party acs
+  commands <- testTrigger trigger party acs
 
   length commands === 2
   assertExerciseCmd commands $ \(cid, actualChoice) -> do

@@ -92,11 +92,11 @@ public class SupplychainIT {
       RuleChain.outerRule(sandbox.getRule())
           .around(
               createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:aggregatedQuoteTrigger",
+                  "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger",
                   SELLER_PARTY))
           .around(
               createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:deliveryCompleteTrigger",
+                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger",
                   SELLER_PARTY));
 
   private Trigger createTrigger(String triggerName, Party party) {

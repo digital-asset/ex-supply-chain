@@ -18,26 +18,26 @@ import DA.RefApps.SupplyChain.Payment
 
 import Test.DA.TriggerTestUtils
 
-deliveryCompleteTrigger : Trigger ()
-deliveryCompleteTrigger = Trigger
+trigger : Trigger ()
+trigger = Trigger
   { initialize = const ()
   , updateState = \_ _ _ -> ()
-  , rule = deliveryCompleteRule
+  , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @DeliveryComplete
     ]
   , heartbeat = None
   }
 
-deliveryCompleteRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
-deliveryCompleteRule _party activeContracts _ _ () =
+triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
+triggerRule _party activeContracts _ _ () =
   forA_ deliveryCompletes $ \(cid, _) ->
     dedupExercise cid DeliveryComplete_Accept
  where
   deliveryCompletes = getContracts @DeliveryComplete activeContracts
 
-deliveryCompleteTriggerTest: Scenario ()
-deliveryCompleteTriggerTest = scenario do
+test: Scenario ()
+test = scenario do
   party <- getParty "party"
   deliveryComplete1 <- submit party do
     createDeliveryComplete party
@@ -45,7 +45,7 @@ deliveryCompleteTriggerTest = scenario do
     createDeliveryComplete party
   let acs = toACS deliveryComplete1 <> toACS deliveryComplete2
 
-  commands <- testTrigger deliveryCompleteTrigger party acs
+  commands <- testTrigger trigger party acs
 
   length commands === 2
   assertExerciseCmd commands $ \(cid, actualChoice) -> do

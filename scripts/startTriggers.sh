@@ -35,8 +35,8 @@ run_trigger() {
       --ledger-party "$party"
 }
 
-run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:aggregatedQuoteTrigger Seller &
-run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:deliveryCompleteTrigger Seller &
+run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger Seller &
+run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger Seller &
 
 sleep 2
 pids=$(jobs -p)
