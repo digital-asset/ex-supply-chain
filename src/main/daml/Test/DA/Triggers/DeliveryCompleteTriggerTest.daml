@@ -9,9 +9,12 @@ module Test.DA.Triggers.DeliveryCompleteTriggerTest where
 
 import Daml.Trigger.Assert
 import DA.Assert
+import DA.Date
 
 import DA.RefApps.SupplyChain.Delivery
+import DA.RefApps.SupplyChain.Lock
 import DA.RefApps.SupplyChain.Payment
+import DA.RefApps.SupplyChain.Types
 import DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger
 
 import Test.DA.Triggers.TriggerTestUtils
@@ -38,16 +41,27 @@ allDeliveriesAcceptedTest = scenario do
   where
     createDeliveryComplete : Party -> Update (ContractId DeliveryComplete)
     createDeliveryComplete party = do
-      cid <- create PaymentRequest with
+      dummyPaymentRequestCid <- create PaymentRequest with
         payer = party
         payee = party
         price = 1.0
+      dummyTransportCommitmentCid <- create TransportCommitment with
+        workflowId = ""
+        transportCompany = party
+        supplier = party
+        warehouseProduct = WarehouseProduct with
+          productName = ""
+          warehouse = party
+          warehouseAddress = ""
+          quantity = 0
+        deliveryDate = date 1970 Jan 1
+        transportPaymentRequestCid = dummyPaymentRequestCid
       create DeliveryComplete with
         workflowId = ""
         buyer = party
         seller = party
         transportCompany = party
-        transportCommitmentCid = coerceContractId cid -- https://discuss.daml.com/t/can-we-mock-contract-id-when-testing-triggers/519
-        buyerPaymentRequestCid = cid
-        supplierPaymentRequestCid = cid
-        warehousePaymentRequestCid = cid
+        transportCommitmentCid = dummyTransportCommitmentCid
+        buyerPaymentRequestCid = dummyPaymentRequestCid
+        supplierPaymentRequestCid = dummyPaymentRequestCid
+        warehousePaymentRequestCid = dummyPaymentRequestCid
