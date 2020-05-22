@@ -14,6 +14,8 @@ import DA.Next.Map qualified as Map
 import DA.RefApps.SupplyChain.Inventory
 import DA.RefApps.SupplyChain.Quote
 import DA.RefApps.SupplyChain.QuoteRequest
+import DA.RefApps.SupplyChain.Types
+import DA.Record (HasField)
 
 trigger : Trigger ()
 trigger = Trigger
@@ -31,8 +33,8 @@ trigger = Trigger
 triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
 triggerRule _party activeContracts _ _ () =
   forA_ quoteTriggers $ \(quoteCid, quote) -> do
-    let transportQuotes = matcheingQuotes quote.workflowId allTransportQuotes
-    let inventoryQuotes = matcheingQuotes quote.workflowId allInventoryQuotes
+    let transportQuotes = quotesForWorkflow quote.workflowId allTransportQuotes
+    let inventoryQuotes = quotesForWorkflow quote.workflowId allInventoryQuotes
     let inventoryItems = filter
           (`isInventoryItemAmongInventoryQuotes` inventoryQuotes)
           allInventoryItems
@@ -45,10 +47,8 @@ triggerRule _party activeContracts _ _ () =
     allTransportQuotes = getContracts @TransportQuote activeContracts
     allInventoryQuotes = getContracts @InventoryQuote activeContracts
     allInventoryItems = getContracts @InventoryItem activeContracts
-    workflowMatches : (Eq a1, DA.Internal.Record.HasField "workflowId" r a1) => a1 -> (a2, r) -> Bool
-    workflowMatches workflowId (_, quote) = workflowId == quote.workflowId
-    matcheingQuotes : (Eq a1, DA.Internal.Record.HasField "workflowId" r a1) => a1 -> [(a2, r)] -> [(a2, r)]
-    matcheingQuotes workflowId = filter (workflowMatches workflowId)
+    quotesForWorkflow : HasField "workflowId" r WorkflowId => WorkflowId -> [(a, r)] -> [(a, r)]
+    quotesForWorkflow workflowId = filter (\(_, quote) -> workflowId == quote.workflowId)
     isInventoryItemAmongInventoryQuotes : (ContractId InventoryItem, InventoryItem) -> [(ContractId InventoryQuote, InventoryQuote)] -> Bool
     isInventoryItemAmongInventoryQuotes inventoryItem = any (predicate inventoryItem)
 
