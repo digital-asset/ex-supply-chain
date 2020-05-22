@@ -38,10 +38,10 @@ triggerRule _party activeContracts _ _ () =
     inventoryQuoteRequests = getContracts @InventoryQuoteRequestBotTrigger activeContracts
     allInventoryItems = getContracts @InventoryItem activeContracts
 
-predicate : InventoryQuoteRequestBotTrigger -> (ContractId InventoryItem, InventoryItem) -> Bool
-predicate request (_, item) =
+matches : InventoryQuoteRequestBotTrigger -> (ContractId InventoryItem, InventoryItem) -> Bool
+matches request (_, item) =
   item.productName == request.product.productName
     && item.warehouse == request.warehouse
 
 itemMatching : InventoryQuoteRequestBotTrigger -> [(ContractId InventoryItem, InventoryItem)] -> Optional (ContractId InventoryItem, InventoryItem)
-itemMatching request items = find (predicate request) items
+itemMatching request items = find (matches request) items
