@@ -34,7 +34,7 @@ triggerRule _party activeContracts _ _ () =
     let transportQuotes = matcheingQuotes quote.workflowId allTransportQuotes
     let inventoryQuotes = matcheingQuotes quote.workflowId allInventoryQuotes
     let inventoryItems = filter
-          (isInventoryItemAmongInventoryQuotes inventoryQuotes)
+          (`isInventoryItemAmongInventoryQuotes` inventoryQuotes)
           allInventoryItems
     dedupExercise quoteCid CalculateAggregatedQuoteBotTrigger_Proceed with
           transportQuoteCids = map fst transportQuotes
@@ -44,11 +44,14 @@ triggerRule _party activeContracts _ _ () =
     quoteTriggers = getContracts @CalculateAggregatedQuoteBotTrigger activeContracts
     allTransportQuotes = getContracts @TransportQuote activeContracts
     allInventoryQuotes = getContracts @InventoryQuote activeContracts
-    workflowMatches workflowId (_, quote) = quote.workflowId == quote.workflowId
-    matcheingQuotes workflowId = filter (workflowMatches workflowId)
     allInventoryItems = getContracts @InventoryItem activeContracts
-    isInventoryItemAmongInventoryQuotes : [(ContractId InventoryQuote, InventoryQuote)] -> (ContractId InventoryItem, InventoryItem) -> Bool
-    isInventoryItemAmongInventoryQuotes inventoryQuoteCids inventoryItem = any (predicate inventoryItem) inventoryQuoteCids
+    workflowMatches : (Eq a1, DA.Internal.Record.HasField "workflowId" r a1) => a1 -> (a2, r) -> Bool
+    workflowMatches workflowId (_, quote) = workflowId == quote.workflowId
+    matcheingQuotes : (Eq a1, DA.Internal.Record.HasField "workflowId" r a1) => a1 -> [(a2, r)] -> [(a2, r)]
+    matcheingQuotes workflowId = filter (workflowMatches workflowId)
+    isInventoryItemAmongInventoryQuotes : (ContractId InventoryItem, InventoryItem) -> [(ContractId InventoryQuote, InventoryQuote)] -> Bool
+    isInventoryItemAmongInventoryQuotes inventoryItem = any (predicate inventoryItem)
+
 
 -- TODO rename and factor out code dupe
 predicate : (ContractId InventoryItem, InventoryItem) -> (ContractId InventoryQuote, InventoryQuote) -> Bool
