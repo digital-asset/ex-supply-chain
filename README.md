@@ -17,7 +17,7 @@ The Supply Chain application demonstrates a generic example between a Buyer, Sel
 
 #### Prerequisites
 
-```
+Be sure you have the following installed.
 
 There are two options to run the app:
 - Option 1: with Docker. Requires:
@@ -79,7 +79,7 @@ _**Note:** This demo is designed to show successful conclusion of the supply cha
   <tr>
    <td><strong>Role</strong>
    </td>
-   <td><strong>Responsibilities</strong>
+   <td><strong>Responsibility</strong>
    </td>
   </tr>
   <tr>
