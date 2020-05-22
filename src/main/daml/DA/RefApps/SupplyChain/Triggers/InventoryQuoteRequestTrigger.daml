@@ -34,9 +34,9 @@ triggerRule _party activeContracts _ _ () =
         dedupExercise requestCid InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid
       None ->
         debug $ "No inventory item found for: " <> show request.product.productName <> " in " <> show request.warehouse
- where
-   inventoryQuoteRequests = getContracts @InventoryQuoteRequestBotTrigger activeContracts
-   allInventoryItems = getContracts @InventoryItem activeContracts
+  where
+    inventoryQuoteRequests = getContracts @InventoryQuoteRequestBotTrigger activeContracts
+    allInventoryItems = getContracts @InventoryItem activeContracts
 
 predicate : InventoryQuoteRequestBotTrigger -> (ContractId InventoryItem, InventoryItem) -> Bool
 predicate request (_, item) =

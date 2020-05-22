@@ -28,5 +28,5 @@ triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA 
 triggerRule _party activeContracts _ _ () =
   forA_ aggregatedQuotes $ \(cid, _) ->
     dedupExercise cid AggregatedQuoteTrigger_Execute
- where
-  aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
+  where
+    aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts
