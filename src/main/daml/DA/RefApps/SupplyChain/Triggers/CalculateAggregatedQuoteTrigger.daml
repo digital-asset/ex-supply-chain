@@ -36,7 +36,7 @@ triggerRule _party activeContracts _ _ () =
     let transportQuotes = quotesForWorkflow quote.workflowId allTransportQuotes
     let inventoryQuotes = quotesForWorkflow quote.workflowId allInventoryQuotes
     let inventoryItems = filter
-          (`isInventoryItemAmongInventoryQuotes` inventoryQuotes)
+          (\(_, inventoryItem) -> isInventoryItemAmongInventoryQuotes inventoryItem inventoryQuotes)
           allInventoryItems
     dedupExercise quoteCid CalculateAggregatedQuoteBotTrigger_Proceed with
           transportQuoteCids = map fst transportQuotes
@@ -49,8 +49,8 @@ triggerRule _party activeContracts _ _ () =
     allInventoryItems = getContracts @InventoryItem activeContracts
     quotesForWorkflow : HasField "workflowId" r WorkflowId => WorkflowId -> [(a, r)] -> [(a, r)]
     quotesForWorkflow workflowId = filter (\(_, quote) -> workflowId == quote.workflowId)
-    isInventoryItemAmongInventoryQuotes : (ContractId InventoryItem, InventoryItem) -> [(ContractId InventoryQuote, InventoryQuote)] -> Bool
-    isInventoryItemAmongInventoryQuotes (_, inventoryItem) = any (\(_, request) -> matches inventoryItem request)
+    isInventoryItemAmongInventoryQuotes : InventoryItem -> [(ContractId InventoryQuote, InventoryQuote)] -> Bool
+    isInventoryItemAmongInventoryQuotes inventoryItem = any (\(_, request) -> matches inventoryItem request)
 
 matches : InventoryItem -> InventoryQuote -> Bool
 matches item request =

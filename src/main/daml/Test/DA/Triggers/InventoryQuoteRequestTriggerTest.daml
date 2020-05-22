@@ -55,8 +55,8 @@ matchesChecksBothProductnameAndWarehouseTest = scenario do
   False === matches (createItem warehouse1 productName2) request11
   False === matches (createItem warehouse2 productName2) request11
 
-itemMatchingRetrievesTest : Scenario ()
-itemMatchingRetrievesTest = scenario do
+itemMatchingTest : Scenario ()
+itemMatchingTest = scenario do
   party <- getParty "Warehouse1"
   let productName1 = "Product 1"
   let productName2 = "Product 2"
@@ -66,16 +66,7 @@ itemMatchingRetrievesTest = scenario do
         [ (dummyCid, createItem party productName2)
         , (dummyCid, createItem party productName1)]
   Some (dummyCid, createItem party productName1) === itemMatching request items
-
-itemMatchingReturnsNoneTest : Scenario ()
-itemMatchingReturnsNoneTest = scenario do
-  party <- getParty "Warehouse1"
-  let productName1 = "Product 1"
-  let productName2 = "Product 2"
-  dummyCid <- submit party do create $ createItem party productName1
-  let request = createRequest party productName1
-  let items = [ (dummyCid, createItem party productName2) ]
-  None === itemMatching request items
+  None === itemMatching request [ (dummyCid, createItem party productName2) ]
 
 createRequest : Party -> Text -> InventoryQuoteRequestBotTrigger
 createRequest party productName = do
