@@ -1,0 +1,53 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger where
+
+import Daml.Trigger
+import DA.Foldable (forA_) -- hiding (length, any)
+import DA.Next.Map qualified as Map
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.Quote
+import DA.RefApps.SupplyChain.QuoteRequest
+
+trigger : Trigger ()
+trigger = Trigger
+  { initialize = const ()
+  , updateState = \_ _ _ -> ()
+  , rule = triggerRule
+  , registeredTemplates = RegisteredTemplates [
+      registeredTemplate @CalculateAggregatedQuoteBotTrigger
+    , registeredTemplate @TransportQuote
+    , registeredTemplate @InventoryQuote
+    , registeredTemplate @InventoryItem]
+  , heartbeat = None
+  }
+
+triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
+triggerRule _party activeContracts _ _ () =
+  forA_ quoteTriggers $ \(quoteCid, quote) -> do
+    let transportQuotes = matcheingQuotes quote.workflowId allTransportQuotes
+    let inventoryQuotes = matcheingQuotes quote.workflowId allInventoryQuotes
+    let inventoryItems = filter
+          (isInventoryItemAmongInventoryQuotes inventoryQuoteCids)
+          allInventoryItems
+    pure ()
+  where
+    quoteTriggers = getContracts @CalculateAggregatedQuoteBotTrigger activeContracts
+    allTransportQuotes = getContracts @TransportQuote activeContracts
+    allInventoryQuotes = getContracts @InventoryQuote activeContracts
+    workflowMatches workflowId (_, quote) = quote.workflowId == quote.workflowId
+    matcheingQuotes workflowId = filter (workflowMatches workflowId)
+    allInventoryItems = getContracts @InventoryItem activeContracts
+    isInventoryItemAmongInventoryQuotes inventoryQuoteCids inventoryItem = any (predicate inventoryItem) inventoryQuoteCids
+
+-- TODO rename and factor out code dupe
+predicate : (ContractId InventoryItem, InventoryItem) -> (ContractId InventoryQuote, InventoryQuote) -> Bool
+predicate (_, item) (_, request) =
+  item.productName == request.product.productName
+    && item.warehouse == request.warehouse
