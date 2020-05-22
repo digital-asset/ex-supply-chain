@@ -39,6 +39,7 @@ run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger Selle
 run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger Seller &
 run_trigger DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger Warehouse1 &
 run_trigger DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger Warehouse2 &
+run_trigger DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger:trigger Supplier &
 
 sleep 2
 pids=$(jobs -p)

@@ -77,7 +77,6 @@ public class SupplychainIT {
           .module(TEST_MODULE)
           .startScript(TEST_SCRIPT)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
-          .setupAppCallback(SupplyChain::runBots)
           .build();
 
   @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
@@ -103,7 +102,11 @@ public class SupplychainIT {
           .around(
               createTrigger(
                   "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
-                  WAREHOUSE2_PARTY));
+                  WAREHOUSE2_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger:trigger",
+                  SUPPLIER_PARTY));
 
   private Trigger createTrigger(String triggerName, Party party) {
     return trigger.triggerName(triggerName).party(party).build();
