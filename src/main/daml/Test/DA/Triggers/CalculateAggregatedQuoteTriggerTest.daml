@@ -11,13 +11,13 @@ import Daml.Trigger.Assert
 import DA.Assert
 import DA.Foldable hiding (length)
 
-import DA.RefApps.SupplyChain.Inventory
 import DA.RefApps.SupplyChain.Quote
 import DA.RefApps.SupplyChain.QuoteRequest
 import DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger
 import DA.RefApps.SupplyChain.Types
 
 import Test.DA.Triggers.TriggerTestUtils
+import Test.DA.TestUtils
 
 triggerProceedsWithAllQuotesWithMatchingItemsTest: Scenario ()
 triggerProceedsWithAllQuotesWithMatchingItemsTest = scenario do
@@ -57,6 +57,16 @@ triggerProceedsWithAllQuotesWithMatchingItemsTest = scenario do
     trigger2 === cid
     expectedChoice2 === actualChoice
 
+  where
+    createTrigger : Party -> WorkflowId -> CalculateAggregatedQuoteBotTrigger
+    createTrigger party workflowId =
+      CalculateAggregatedQuoteBotTrigger with
+        workflowId
+        supplier = party
+        buyer = party
+        buyerAddress = ""
+        seller = party
+        products = []
 
 matchesChecksBothProductnameAndWarehouseTest : Scenario ()
 matchesChecksBothProductnameAndWarehouseTest = scenario do
@@ -87,33 +97,3 @@ isInventoryItemAmongInventoryQuotesTest = scenario do
   let trueList = falseList <> [ (dummyCid, createInventoryQuote "" party productName1) ]
   True === isInventoryItemAmongInventoryQuotes item trueList
   False === isInventoryItemAmongInventoryQuotes item falseList
-
-createTrigger : Party -> WorkflowId -> CalculateAggregatedQuoteBotTrigger
-createTrigger party workflowId =
-  CalculateAggregatedQuoteBotTrigger with
-    workflowId
-    supplier = party
-    buyer = party
-    buyerAddress = ""
-    seller = party
-    products = []
-
-createInventoryQuote : WorkflowId -> Party -> Text -> InventoryQuote
-createInventoryQuote workflowId party productName =
-  InventoryQuote with
-    workflowId
-    warehouse = party
-    supplier = party
-    productName = productName
-    quantity = 0
-    price = 0.0
-
--- TODO refactor to eliminate code dup
-createItem : Party -> Text -> InventoryItem
-createItem party productName =
-  InventoryItem with
-    warehouse = party
-    supplier = party
-    productName = productName
-    quantity = 0
-    unitPrice = 0.0

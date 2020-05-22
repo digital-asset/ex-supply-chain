@@ -9,15 +9,13 @@ module Test.DA.Triggers.InventoryQuoteRequestTriggerTest where
 
 import Daml.Trigger.Assert
 import DA.Assert
-import DA.Date
 import DA.Foldable hiding (length)
 
-import DA.RefApps.SupplyChain.Inventory
 import DA.RefApps.SupplyChain.QuoteRequest
 import DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger
-import DA.RefApps.SupplyChain.Types
 
 import Test.DA.Triggers.TriggerTestUtils
+import Test.DA.TestUtils
 
 triggerAcceptsAllRequestsWithMatchingItemsTest: Scenario ()
 triggerAcceptsAllRequestsWithMatchingItemsTest = scenario do
@@ -67,22 +65,3 @@ itemMatchingTest = scenario do
         , (dummyCid, createItem party productName1)]
   Some (dummyCid, createItem party productName1) === itemMatching request items
   None === itemMatching request [ (dummyCid, createItem party productName2) ]
-
-createRequest : Party -> Text -> InventoryQuoteRequestBotTrigger
-createRequest party productName = do
-  let sampleDate = date 1970 Jan 1
-  let product = OrderedProduct productName 0 sampleDate sampleDate
-  InventoryQuoteRequestBotTrigger with
-        workflowId = ""
-        warehouse = party
-        supplier = party
-        product
-
-createItem : Party -> Text -> InventoryItem
-createItem party productName =
-  InventoryItem with
-    warehouse = party
-    supplier = party
-    productName = productName
-    quantity = 0
-    unitPrice = 0.0
