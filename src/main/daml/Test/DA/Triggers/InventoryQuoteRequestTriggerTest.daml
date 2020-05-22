@@ -49,12 +49,11 @@ matchesChecksBothProductnameAndWarehouseTest = scenario do
   warehouse2 <- getParty "Warehouse2"
   let productName1 = "Product 1"
   let productName2 = "Product 2"
-  dummyCid <- submit warehouse1 do create $ createItem warehouse1 productName1
   let request11 = createRequest warehouse1 productName1
-  True === matches request11 (dummyCid, createItem warehouse1 productName1)
-  False === matches request11 (dummyCid, createItem warehouse2 productName1)
-  False === matches request11 (dummyCid, createItem warehouse1 productName2)
-  False === matches request11 (dummyCid, createItem warehouse2 productName2)
+  True === matches (createItem warehouse1 productName1) request11
+  False === matches (createItem warehouse2 productName1) request11
+  False === matches (createItem warehouse1 productName2) request11
+  False === matches (createItem warehouse2 productName2) request11
 
 itemMatchingRetrievesTest : Scenario ()
 itemMatchingRetrievesTest = scenario do
