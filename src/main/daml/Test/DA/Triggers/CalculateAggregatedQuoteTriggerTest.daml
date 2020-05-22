@@ -1,0 +1,65 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module Test.DA.Triggers.CalculateAggregatedQuoteTriggerTest where
+
+import DA.Assert
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.Quote
+import DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger hiding (trigger)
+
+
+matchesChecksBothProductnameAndWarehouseTest : Scenario ()
+matchesChecksBothProductnameAndWarehouseTest = scenario do
+  warehouse1 <- getParty "Warehouse1"
+  warehouse2 <- getParty "Warehouse2"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  let quote11 = InventoryQuote with
+        workflowId = ""
+        warehouse = warehouse1
+        supplier = warehouse1
+        productName = productName1
+        quantity = 0
+        price = 0.0
+  True === matches (createItem warehouse1 productName1) quote11
+  False === matches (createItem warehouse2 productName1) quote11
+  False === matches (createItem warehouse1 productName2) quote11
+  False === matches (createItem warehouse2 productName2) quote11
+
+isInventoryItemAmongInventoryQuotesTest : Scenario ()
+isInventoryItemAmongInventoryQuotesTest = scenario do
+  party <- getParty "Warehouse1"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  let item = createItem party productName1
+  dummyCid <- submit party do create $ createQuote party ""
+  let falseList = [ (dummyCid, createQuote party productName2) ]
+  let trueList =falseList <> [ (dummyCid, createQuote party productName1) ]
+  True === isInventoryItemAmongInventoryQuotes item trueList
+  False === isInventoryItemAmongInventoryQuotes item falseList
+
+createQuote : Party -> Text -> InventoryQuote
+createQuote party productName = do
+  InventoryQuote with
+    workflowId = ""
+    warehouse = party
+    supplier = party
+    productName = productName
+    quantity = 0
+    price = 0.0
+
+-- TODO refactor to eliminate code dup
+createItem : Party -> Text -> InventoryItem
+createItem party productName =
+  InventoryItem with
+    warehouse = party
+    supplier = party
+    productName = productName
+    quantity = 0
+    unitPrice = 0.0
