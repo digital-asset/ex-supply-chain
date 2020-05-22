@@ -45,4 +45,5 @@ matches item request =
     && item.warehouse == request.warehouse
 
 itemMatching : InventoryQuoteRequestBotTrigger -> [(ContractId InventoryItem, InventoryItem)] -> Optional (ContractId InventoryItem, InventoryItem)
-itemMatching request items = find (\(_, item) -> matches item request) items
+itemMatching request items =
+  find (\(_, item) -> matches item request) items
