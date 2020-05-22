@@ -114,7 +114,7 @@ public class Trigger extends ExternalResource {
       // TODO remove sleep and the message as soon as DAML Triggers become more effective
       logger.debug(
           "Trigger apparently has started, but because of the usual high load, we wait a bit more to avoid unexpected test failures.");
-      Thread.sleep(10_000);
+      Thread.sleep(5_000);
     } catch (InterruptedException e) {
       throw new IllegalStateException("Trigger did not start within timeout.");
     } finally {
