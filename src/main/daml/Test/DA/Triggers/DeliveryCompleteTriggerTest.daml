@@ -38,7 +38,7 @@ allDeliveriesAcceptedTest = scenario do
   where
     createDeliveryComplete : Party -> Update (ContractId DeliveryComplete)
     createDeliveryComplete party = do
-      cid <- create PaymentRequest with
+      dummyPaymentRequestCid <- create PaymentRequest with
         payer = party
         payee = party
         price = 1.0
@@ -47,7 +47,7 @@ allDeliveriesAcceptedTest = scenario do
         buyer = party
         seller = party
         transportCompany = party
-        transportCommitmentCid = coerceContractId cid -- https://discuss.daml.com/t/can-we-mock-contract-id-when-testing-triggers/519
-        buyerPaymentRequestCid = cid
-        supplierPaymentRequestCid = cid
-        warehousePaymentRequestCid = cid
+        transportCommitmentCid = coerceContractId dummyPaymentRequestCid -- https://discuss.daml.com/t/can-we-mock-contract-id-when-testing-triggers/519
+        buyerPaymentRequestCid = dummyPaymentRequestCid
+        supplierPaymentRequestCid = dummyPaymentRequestCid
+        warehousePaymentRequestCid = dummyPaymentRequestCid
