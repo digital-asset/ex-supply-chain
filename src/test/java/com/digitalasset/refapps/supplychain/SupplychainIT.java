@@ -75,8 +75,7 @@ public class SupplychainIT {
   private static final Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
-          .module(TEST_MODULE)
-          .startScript(TEST_SCRIPT)
+          .moduleAndScript(TEST_MODULE, TEST_SCRIPT)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
           .build();
 
