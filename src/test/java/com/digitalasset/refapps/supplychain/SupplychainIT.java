@@ -101,17 +101,6 @@ public class SupplychainIT {
     return trigger.triggerName(triggerName).party(party).build();
   }
 
-  @Test(expected = TimeoutException.class)
-  public void testPartyIsCorrect() {
-    sandbox
-        .getLedgerAdapter()
-        .getCreatedContractId(
-            BUYER_PARTY,
-            BuyerSellerRelationship.TEMPLATE_ID,
-            record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
-            BuyerSellerRelationship.ContractId::new);
-  }
-
   @Test
   public void testFullWorkflow() throws IOException {
     final DefaultLedgerAdapter ledgerAdapter = sandbox.getLedgerAdapter();
