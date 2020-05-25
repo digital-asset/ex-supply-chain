@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -77,6 +78,7 @@ public class SupplychainIT {
           .dar(RELATIVE_DAR_PATH)
           .moduleAndScript(TEST_MODULE, TEST_SCRIPT)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
+          .observationTimeout(Duration.ofSeconds(30))
           .build();
 
   @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
