@@ -5,7 +5,6 @@
 package com.digitalasset.refapps.supplychain;
 
 import static com.digitalasset.testing.Dsl.list;
-import static com.digitalasset.testing.Dsl.party;
 import static com.digitalasset.testing.Dsl.record;
 import static com.digitalasset.testing.Dsl.text;
 
@@ -48,7 +47,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
-import java.util.concurrent.TimeoutException;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
