@@ -29,6 +29,7 @@ import da.refapps.supplychain.delivery.TransportPending;
 import da.refapps.supplychain.order.ConfirmedOrder;
 import da.refapps.supplychain.quote.QuoteForBuyer;
 import da.refapps.supplychain.quote.TransportQuoteItem;
+import da.refapps.supplychain.quoterequest.CalculateAggregatedQuoteBotTrigger;
 import da.refapps.supplychain.quoterequest.QuoteRequest;
 import da.refapps.supplychain.quoterequest.QuoteRequestAccepted;
 import da.refapps.supplychain.quoterequest.QuoteRequestSupplyInvitation;
@@ -274,6 +275,12 @@ public class SupplychainIT {
     ledgerAdapter.exerciseChoice(
         SUPPLIER_PARTY,
         transportQuoteRequestPendingCid.exerciseTransportQuoteRequestPending_ChooseTransport());
+
+    // need to wait here a bit to avoid TimeoutException waiting for AggregatedQuotePending
+    ledgerAdapter.getCreatedContractId(
+        SUPPLIER_PARTY,
+        CalculateAggregatedQuoteBotTrigger.TEMPLATE_ID,
+        CalculateAggregatedQuoteBotTrigger.ContractId::new);
 
     AggregatedQuotePending.ContractId aggregateQuotePendingCid =
         ledgerAdapter.getCreatedContractId(
