@@ -28,5 +28,5 @@ triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA 
 triggerRule _party activeContracts _ _ () =
   forA_ deliveryCompletes $ \(cid, _) ->
     dedupExercise cid DeliveryComplete_Accept
- where
-  deliveryCompletes = getContracts @DeliveryComplete activeContracts
+  where
+    deliveryCompletes = getContracts @DeliveryComplete activeContracts

@@ -29,6 +29,7 @@ import da.refapps.supplychain.delivery.TransportPending;
 import da.refapps.supplychain.order.ConfirmedOrder;
 import da.refapps.supplychain.quote.QuoteForBuyer;
 import da.refapps.supplychain.quote.TransportQuoteItem;
+import da.refapps.supplychain.quoterequest.CalculateAggregatedQuoteBotTrigger;
 import da.refapps.supplychain.quoterequest.QuoteRequest;
 import da.refapps.supplychain.quoterequest.QuoteRequestAccepted;
 import da.refapps.supplychain.quoterequest.QuoteRequestSupplyInvitation;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -74,10 +76,9 @@ public class SupplychainIT {
   private static final Sandbox sandbox =
       Sandbox.builder()
           .dar(RELATIVE_DAR_PATH)
-          .module(TEST_MODULE)
-          .startScript(TEST_SCRIPT)
+          .moduleAndScript(TEST_MODULE, TEST_SCRIPT)
           .parties(BUYER_PARTY.getValue(), SELLER_PARTY.getValue(), SUPPLIER_PARTY.getValue())
-          .setupAppCallback(SupplyChain::runBots)
+          .observationTimeout(Duration.ofSeconds(30))
           .build();
 
   @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
@@ -95,7 +96,19 @@ public class SupplychainIT {
                   "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger", SELLER_PARTY))
           .around(
               createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger", SELLER_PARTY));
+                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger", SELLER_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
+                  WAREHOUSE1_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
+                  WAREHOUSE2_PARTY))
+          .around(
+              createTrigger(
+                  "DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger:trigger",
+                  SUPPLIER_PARTY));
 
   private Trigger createTrigger(String triggerName, Party party) {
     return trigger.triggerName(triggerName).party(party).build();
@@ -252,6 +265,12 @@ public class SupplychainIT {
     ledgerAdapter.exerciseChoice(
         SUPPLIER_PARTY,
         transportQuoteRequestPendingCid.exerciseTransportQuoteRequestPending_ChooseTransport());
+
+    // need to wait here a bit to avoid TimeoutException waiting for AggregatedQuotePending
+    ledgerAdapter.getCreatedContractId(
+        SUPPLIER_PARTY,
+        CalculateAggregatedQuoteBotTrigger.TEMPLATE_ID,
+        CalculateAggregatedQuoteBotTrigger.ContractId::new);
 
     AggregatedQuotePending.ContractId aggregateQuotePendingCid =
         ledgerAdapter.getCreatedContractId(

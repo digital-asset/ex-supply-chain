@@ -115,7 +115,7 @@ template SupplyRequest
           pending <- create TransportQuoteRequestPending with ..
           return (pending, invRequests, quoteRequests)
 
--- Triggers a bot to collect the inventory item matching the ordered product
+-- Trigger collects the inventory item matching the ordered product
 template InventoryQuoteRequestBotTrigger
   with
     workflowId: WorkflowId
@@ -168,12 +168,12 @@ template TransportQuoteRequestPending
   where
     signatory supplier
     controller supplier can
-      -- Supplier waits no more, bot collects available TransportQuote-s
+      -- Supplier waits no more, trigger collects available TransportQuote-s
       TransportQuoteRequestPending_ChooseTransport: ContractId CalculateAggregatedQuoteBotTrigger
         do
           create CalculateAggregatedQuoteBotTrigger with ..
 
--- Triggers a bot to collect all the inventory and transport quotes
+-- Trigger collects all the inventory and transport quotes
 template CalculateAggregatedQuoteBotTrigger
   with
     workflowId: WorkflowId

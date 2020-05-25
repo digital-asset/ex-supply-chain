@@ -1,0 +1,61 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger where
+
+import Daml.Trigger
+import DA.Foldable (forA_) -- hiding (length, any)
+import DA.Next.Map qualified as Map
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.Quote
+import DA.RefApps.SupplyChain.QuoteRequest
+import DA.RefApps.SupplyChain.Types
+import DA.Record (HasField)
+
+trigger : Trigger ()
+trigger = Trigger
+  { initialize = const ()
+  , updateState = \_ _ _ -> ()
+  , rule = triggerRule
+  , registeredTemplates = RegisteredTemplates [
+      registeredTemplate @CalculateAggregatedQuoteBotTrigger
+    , registeredTemplate @TransportQuote
+    , registeredTemplate @InventoryQuote
+    , registeredTemplate @InventoryItem
+    ]
+  , heartbeat = None
+  }
+
+triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
+triggerRule _party activeContracts _ _ () =
+  forA_ quoteTriggers $ \(quoteCid, quote) -> do
+    let transportQuotes = quotesForWorkflow quote.workflowId allTransportQuotes
+    let inventoryQuotes = quotesForWorkflow quote.workflowId allInventoryQuotes
+    let inventoryItems = filter
+          (\(_, inventoryItem) -> isInventoryItemAmongInventoryQuotes inventoryItem inventoryQuotes)
+          allInventoryItems
+    dedupExercise quoteCid CalculateAggregatedQuoteBotTrigger_Proceed with
+      transportQuoteCids = map fst transportQuotes
+      inventoryQuoteCids = map fst inventoryQuotes
+      inventoryItemCids = map fst inventoryItems
+  where
+    quoteTriggers = getContracts @CalculateAggregatedQuoteBotTrigger activeContracts
+    allTransportQuotes = getContracts @TransportQuote activeContracts
+    allInventoryQuotes = getContracts @InventoryQuote activeContracts
+    allInventoryItems = getContracts @InventoryItem activeContracts
+    quotesForWorkflow : HasField "workflowId" r WorkflowId => WorkflowId -> [(a, r)] -> [(a, r)]
+    quotesForWorkflow workflowId = filter (\(_, quote) -> workflowId == quote.workflowId)
+
+isInventoryItemAmongInventoryQuotes : InventoryItem -> [(ContractId InventoryQuote, InventoryQuote)] -> Bool
+isInventoryItemAmongInventoryQuotes inventoryItem =
+  any (\(_, request) -> matches inventoryItem request)
+
+matches : InventoryItem -> InventoryQuote -> Bool
+matches item request =
+  item.productName == request.productName
+    && item.warehouse == request.warehouse

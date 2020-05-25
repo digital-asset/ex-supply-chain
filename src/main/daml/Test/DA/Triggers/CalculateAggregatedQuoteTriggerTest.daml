@@ -1,0 +1,99 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module Test.DA.Triggers.CalculateAggregatedQuoteTriggerTest where
+
+import Daml.Trigger.Assert
+import DA.Assert
+import DA.Foldable hiding (length)
+
+import DA.RefApps.SupplyChain.Quote
+import DA.RefApps.SupplyChain.QuoteRequest
+import DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger
+import DA.RefApps.SupplyChain.Types
+
+import Test.DA.Triggers.TriggerTestUtils
+import Test.DA.TestUtils
+
+triggerProceedsWithAllQuotesWithMatchingItemsTest: Scenario ()
+triggerProceedsWithAllQuotesWithMatchingItemsTest = scenario do
+  party <- getParty "party"
+
+  trigger1 <- submit party do create $ createTrigger party "Workflow 1"
+  trigger2 <- submit party do create $ createTrigger party "Workflow 2"
+
+  -- quote11 is intentionally missing
+  quote12 <- submit party do create $ createInventoryQuote "Workflow 1" party "Product 2"
+  quote21 <- submit party do create $ createInventoryQuote "Workflow 2" party "Product 1"
+  quote22 <- submit party do create $ createInventoryQuote "Workflow 2" party "Product 2"
+  quote22' <- submit party do create $ createInventoryQuote "Workflow 2" party "Product 2"
+
+  item1 <- submit party do create $ createItem party "Product 1"
+  item2 <- submit party do create $ createItem party "Product 2"
+
+  let acs = foldMap toACS [trigger1, trigger2]
+         <> foldMap toACS [quote12, quote21, quote22, quote22']
+         <> foldMap toACS [item1, item2]
+
+  commands <- testTrigger trigger party acs
+
+  length commands === 2
+  let expectedChoice1 = CalculateAggregatedQuoteBotTrigger_Proceed with
+        transportQuoteCids = []
+        inventoryQuoteCids = [quote12]
+        inventoryItemCids = [item2]
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    trigger1 === cid
+    expectedChoice1 === actualChoice
+  let expectedChoice2 = CalculateAggregatedQuoteBotTrigger_Proceed with
+        transportQuoteCids = []
+        inventoryQuoteCids = [quote21, quote22, quote22']
+        inventoryItemCids = [item1, item2]
+  assertExerciseCmd commands $ \(cid, actualChoice) -> do
+    trigger2 === cid
+    expectedChoice2 === actualChoice
+
+  where
+    createTrigger : Party -> WorkflowId -> CalculateAggregatedQuoteBotTrigger
+    createTrigger party workflowId =
+      CalculateAggregatedQuoteBotTrigger with
+        workflowId
+        supplier = party
+        buyer = party
+        buyerAddress = ""
+        seller = party
+        products = []
+
+matchesChecksBothProductnameAndWarehouseTest : Scenario ()
+matchesChecksBothProductnameAndWarehouseTest = scenario do
+  warehouse1 <- getParty "Warehouse1"
+  warehouse2 <- getParty "Warehouse2"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  let quote11 = InventoryQuote with
+        workflowId = ""
+        warehouse = warehouse1
+        supplier = warehouse1
+        productName = productName1
+        quantity = 0
+        price = 0.0
+  True === matches (createItem warehouse1 productName1) quote11
+  False === matches (createItem warehouse2 productName1) quote11
+  False === matches (createItem warehouse1 productName2) quote11
+  False === matches (createItem warehouse2 productName2) quote11
+
+isInventoryItemAmongInventoryQuotesTest : Scenario ()
+isInventoryItemAmongInventoryQuotesTest = scenario do
+  party <- getParty "Warehouse1"
+  let productName1 = "Product 1"
+  let productName2 = "Product 2"
+  let item = createItem party productName1
+  dummyCid <- submit party do create $ createInventoryQuote "" party ""
+  let falseList = [ (dummyCid, createInventoryQuote "" party productName2) ]
+  let trueList = falseList <> [ (dummyCid, createInventoryQuote "" party productName1) ]
+  True === isInventoryItemAmongInventoryQuotes item trueList
+  False === isInventoryItemAmongInventoryQuotes item falseList

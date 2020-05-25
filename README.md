@@ -17,28 +17,20 @@ The Supply Chain application demonstrates a generic example between a Buyer, Sel
 
 #### Prerequisites
 
-Be sure you have the following installed:
-- [DAML SDK](https://docs.daml.com/)
-- Docker
-- Java
-- Maven
+Be sure you have the following installed.
 
-#### Build with Maven
-
-Type:
-```shell
-mvn clean package
-```
-
-**Note:** If you change the DAML models locally, you need to re-run this command before starting the application.
+There are two options to run the app:
+- Option 1: with Docker. Requires:
+  - Docker
+- Option 2: in standalone mode. Requires:
+  - [DAML SDK](https://docs.daml.com/)
+  - Java 8 or higher
 
 ### Starting the App
 
-**Note:** Make sure you have built the application with Maven (see: [Build with Maven](#build-with-maven)).
+#### Start App with Docker
 
-There are two options:
-
-#### Option 1: Start App with Docker
+Note: make sure to have at least 8 GBs of memory allocated to Docker.
 
 1. Type:
     ```shell
@@ -47,9 +39,9 @@ There are two options:
 2. Open UI with a browser at http://localhost:7500.
 
 
-#### Option 2: Start App in Standalone
+#### Start App in Standalone
 
-1. Start the DAML Sandbox and Navigator. Type:
+1. Build, then start the DAML Sandbox and Navigator. Type:
     ```shell
     daml start --sandbox-option --address=localhost
     ```
@@ -58,25 +50,21 @@ There are two options:
     ```shell
     scripts/startTriggers.sh localhost 6865 .daml/dist/*.dar
     ```
-3. Start the automation logic by starting bots. Type:
-    ```shell
-    java -jar target/supplychain-0.0.1-SNAPSHOT.jar
-    ```
 
 ### Stopping the App
 
 #### Stopping Dockerized Run
-1. Stop the Docker containers or bots by pressing **Ctrl+C**. (Alternatively, you can also stop it by typing `docker-compose down`.)
+1. Stop the Docker containers or triggers by pressing **Ctrl+C**. (Alternatively, you can also stop it by typing `docker-compose down`.)
 
 #### Stopping Standalone Run
-1. Stop the bots by pressing **Ctrl+C**.
+1. Stop the triggers by pressing **Ctrl+C**.
 1. Stop the Sandbox and the Navigator by pressing **Ctrl+C** in the DAML assistant.
 
 ### Resetting the Prototype
 
 Reset the application by following these steps:
 1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
-2.  Start the app in [Docker](#using-docker) or [Standalone](#standalone-mode) by following the steps in the relevant section.
+2.  Start the app in [Docker](#start-app-with-docker) or [Standalone](#start-app-in-standalone) by following the steps in the relevant section.
 
 ## User Guide
 This User Guide will take you step-by-step through the whole supply chain process described in the Overview.
@@ -91,7 +79,7 @@ _**Note:** This demo is designed to show successful conclusion of the supply cha
   <tr>
    <td><strong>Role</strong>
    </td>
-   <td><strong>Responsibilities</strong>
+   <td><strong>Responsibility</strong>
    </td>
   </tr>
   <tr>
@@ -279,7 +267,7 @@ Note that Supplier can see the available quantity of goods in each warehouse, as
     * margin: a decimal number describing the margin (e.g. `0.1` means 10% margin)
 6. Choose **Submit**.
 
-_Note:_ You cannot click on the contract if you did not start the bots. In this case you need to start over, and make sure the bots run.
+_Note:_ You cannot click on the contract if you did not start the triggers. In this case you need to start over, and make sure the triggers run.
 
 ### Order and Delivery
 

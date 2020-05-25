@@ -1,0 +1,49 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger where
+
+import Daml.Trigger
+import DA.Foldable hiding (length)
+import DA.Next.Map qualified as Map
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.QuoteRequest
+
+trigger : Trigger ()
+trigger = Trigger
+  { initialize = const ()
+  , updateState = \_ _ _ -> ()
+  , rule = triggerRule
+  , registeredTemplates = RegisteredTemplates [
+      registeredTemplate @InventoryQuoteRequestBotTrigger
+    , registeredTemplate @InventoryItem
+    ]
+  , heartbeat = None
+  }
+
+triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
+triggerRule _party activeContracts _ _ () =
+  forA_ inventoryQuoteRequests $ \(requestCid, request) ->
+    case itemMatching request allInventoryItems of
+      Some (inventoryItemCid, _) ->
+        dedupExercise requestCid InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid
+      None ->
+        -- we can change it to error to fail the trigger
+        debug $ "No inventory item found for: " <> show request.product.productName <> " in " <> show request.warehouse
+  where
+    inventoryQuoteRequests = getContracts @InventoryQuoteRequestBotTrigger activeContracts
+    allInventoryItems = getContracts @InventoryItem activeContracts
+
+matches : InventoryItem -> InventoryQuoteRequestBotTrigger -> Bool
+matches item request =
+  item.productName == request.product.productName
+    && item.warehouse == request.warehouse
+
+itemMatching : InventoryQuoteRequestBotTrigger -> [(ContractId InventoryItem, InventoryItem)] -> Optional (ContractId InventoryItem, InventoryItem)
+itemMatching request items =
+  find (\(_, item) -> matches item request) items

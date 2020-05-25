@@ -1,0 +1,44 @@
+--
+-- Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+--
+
+daml 1.2
+
+module Test.DA.TestUtils where
+
+import DA.Date
+
+import DA.RefApps.SupplyChain.Inventory
+import DA.RefApps.SupplyChain.Quote
+import DA.RefApps.SupplyChain.QuoteRequest
+import DA.RefApps.SupplyChain.Types
+
+createInventoryQuote : WorkflowId -> Party -> Text -> InventoryQuote
+createInventoryQuote workflowId party productName =
+  InventoryQuote with
+    workflowId
+    warehouse = party
+    supplier = party
+    productName = productName
+    quantity = 0
+    price = 0.0
+
+createItem : Party -> Text -> InventoryItem
+createItem party productName =
+  InventoryItem with
+    warehouse = party
+    supplier = party
+    productName = productName
+    quantity = 0
+    unitPrice = 0.0
+
+createRequest : Party -> Text -> InventoryQuoteRequestBotTrigger
+createRequest party productName = do
+  let sampleDate = date 1970 Jan 1
+  let product = OrderedProduct productName 0 sampleDate sampleDate
+  InventoryQuoteRequestBotTrigger with
+        workflowId = ""
+        warehouse = party
+        supplier = party
+        product
