@@ -92,7 +92,7 @@ template SupplyRequest
   where
     signatory supplier
     controller supplier can
-      SupplyRequest_StartPriceCollection: (ContractId TransportQuoteRequestPending, [ContractId InventoryQuoteRequestBotTrigger], [ContractId TransportQuoteRequest])
+      SupplyRequest_StartPriceCollection: (ContractId TransportQuoteRequestPending, [ContractId InventoryQuoteRequest], [ContractId TransportQuoteRequest])
         with
           warehouses: [Party]
           transportCompanies: [Party]
@@ -100,7 +100,7 @@ template SupplyRequest
           (invRequests, warehouseProducts) <- fmap (unzip . concat) $ forA warehouses
               (\w -> forA products
                 (\product -> do
-                  req <- create InventoryQuoteRequestBotTrigger with
+                  req <- create InventoryQuoteRequest with
                     warehouse = w, ..
                   let wa = warehouseToAddress w
                       wpwd = WarehouseProductWithDates (WarehouseProduct product.productName w wa product.quantity) product.deliveryFrom product.deliveryTo
@@ -116,7 +116,7 @@ template SupplyRequest
           return (pending, invRequests, quoteRequests)
 
 -- Trigger collects the inventory item matching the ordered product
-template InventoryQuoteRequestBotTrigger
+template InventoryQuoteRequest
   with
     workflowId: WorkflowId
     warehouse: Party
@@ -126,7 +126,7 @@ template InventoryQuoteRequestBotTrigger
     signatory supplier
 
     controller warehouse can
-      InventoryQuoteRequestBotTrigger_Accept: ContractId InventoryQuote
+      InventoryQuoteRequest_Accept: ContractId InventoryQuote
         with
           inventoryItemCid: ContractId InventoryItem
         do
@@ -169,12 +169,12 @@ template TransportQuoteRequestPending
     signatory supplier
     controller supplier can
       -- Supplier waits no more, trigger collects available TransportQuote-s
-      TransportQuoteRequestPending_ChooseTransport: ContractId CalculateAggregatedQuoteBotTrigger
+      TransportQuoteRequestPending_ChooseTransport: ContractId CalculateAggregatedQuote
         do
-          create CalculateAggregatedQuoteBotTrigger with ..
+          create CalculateAggregatedQuote with ..
 
 -- Trigger collects all the inventory and transport quotes
-template CalculateAggregatedQuoteBotTrigger
+template CalculateAggregatedQuote
   with
     workflowId: WorkflowId
     supplier: Party
@@ -185,7 +185,7 @@ template CalculateAggregatedQuoteBotTrigger
   where
     signatory supplier
     controller supplier can
-      CalculateAggregatedQuoteBotTrigger_Proceed: ContractId AggregatedQuotePending
+      CalculateAggregatedQuote_Proceed: ContractId AggregatedQuotePending
         with
           transportQuoteCids: [ContractId TransportQuote]
           inventoryQuoteCids: [ContractId InventoryQuote]

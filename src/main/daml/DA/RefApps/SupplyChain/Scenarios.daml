@@ -140,10 +140,10 @@ fullScenario = scenario do
 
   -- warehouse triggers accept reservation requests
   invReservationCid1 <- submit warehouse1 do
-    exercise invReservationReq1 $ InventoryQuoteRequestBotTrigger_Accept setupData.inventoryW1P1Cid
+    exercise invReservationReq1 $ InventoryQuoteRequest_Accept setupData.inventoryW1P1Cid
 
   invReservationCid2 <- submit warehouse2 do
-    exercise invReservationReq2 $ InventoryQuoteRequestBotTrigger_Accept setupData.inventoryW2P1Cid
+    exercise invReservationReq2 $ InventoryQuoteRequest_Accept setupData.inventoryW2P1Cid
 
   -- After a manual signal (that means end of transport quote request period), supplier's trigger collects
   -- all the available (tranport and inventory) quotes sent in by transport companies with the inventory items
@@ -151,7 +151,7 @@ fullScenario = scenario do
   aggregatedQuotePending <- submit supplier do
     trigger <- exercise tranQuoteReqPending TransportQuoteRequestPending_ChooseTransport
     exercise trigger $
-      CalculateAggregatedQuoteBotTrigger_Proceed
+      CalculateAggregatedQuote_Proceed
         [transportQuoteT1W1, transportQuoteT1W2, transportQuoteT2W1, transportQuoteT2W2]
         [invReservationCid1, invReservationCid2]
         [setupData.inventoryW1P1Cid, setupData.inventoryW1P2Cid, setupData.inventoryW2P1Cid, setupData.inventoryW2P2Cid]

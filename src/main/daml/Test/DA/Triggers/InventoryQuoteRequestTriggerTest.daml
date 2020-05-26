@@ -32,11 +32,11 @@ triggerAcceptsAllRequestsWithMatchingItemsTest = scenario do
   commands <- testTrigger trigger party acs
 
   length commands === 2
-  let expectedChoice2 = InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid = item2
+  let expectedChoice2 = InventoryQuoteRequest_Accept with inventoryItemCid = item2
   assertExerciseCmd commands $ \(cid, actualChoice) -> do
     request2 === cid
     expectedChoice2 === actualChoice
-  let expectedChoice3 = InventoryQuoteRequestBotTrigger_Accept with inventoryItemCid = item3
+  let expectedChoice3 = InventoryQuoteRequest_Accept with inventoryItemCid = item3
   assertExerciseCmd commands $ \(cid, actualChoice) -> do
     request3 === cid
     expectedChoice3 === actualChoice

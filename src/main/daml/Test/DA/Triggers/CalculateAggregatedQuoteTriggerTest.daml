@@ -42,14 +42,14 @@ triggerProceedsWithAllQuotesWithMatchingItemsTest = scenario do
   commands <- testTrigger trigger party acs
 
   length commands === 2
-  let expectedChoice1 = CalculateAggregatedQuoteBotTrigger_Proceed with
+  let expectedChoice1 = CalculateAggregatedQuote_Proceed with
         transportQuoteCids = []
         inventoryQuoteCids = [quote12]
         inventoryItemCids = [item2]
   assertExerciseCmd commands $ \(cid, actualChoice) -> do
     trigger1 === cid
     expectedChoice1 === actualChoice
-  let expectedChoice2 = CalculateAggregatedQuoteBotTrigger_Proceed with
+  let expectedChoice2 = CalculateAggregatedQuote_Proceed with
         transportQuoteCids = []
         inventoryQuoteCids = [quote21, quote22, quote22']
         inventoryItemCids = [item1, item2]
@@ -58,9 +58,9 @@ triggerProceedsWithAllQuotesWithMatchingItemsTest = scenario do
     expectedChoice2 === actualChoice
 
   where
-    createTrigger : Party -> WorkflowId -> CalculateAggregatedQuoteBotTrigger
+    createTrigger : Party -> WorkflowId -> CalculateAggregatedQuote
     createTrigger party workflowId =
-      CalculateAggregatedQuoteBotTrigger with
+      CalculateAggregatedQuote with
         workflowId
         supplier = party
         buyer = party

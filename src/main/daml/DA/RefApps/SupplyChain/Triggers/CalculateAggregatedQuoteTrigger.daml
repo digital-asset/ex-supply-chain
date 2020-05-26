@@ -23,7 +23,7 @@ trigger = Trigger
   , updateState = \_ _ _ -> ()
   , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
-      registeredTemplate @CalculateAggregatedQuoteBotTrigger
+      registeredTemplate @CalculateAggregatedQuote
     , registeredTemplate @TransportQuote
     , registeredTemplate @InventoryQuote
     , registeredTemplate @InventoryItem
@@ -39,12 +39,12 @@ triggerRule _party activeContracts _ _ () =
     let inventoryItems = filter
           (\(_, inventoryItem) -> isInventoryItemAmongInventoryQuotes inventoryItem inventoryQuotes)
           allInventoryItems
-    dedupExercise quoteCid CalculateAggregatedQuoteBotTrigger_Proceed with
+    dedupExercise quoteCid CalculateAggregatedQuote_Proceed with
       transportQuoteCids = map fst transportQuotes
       inventoryQuoteCids = map fst inventoryQuotes
       inventoryItemCids = map fst inventoryItems
   where
-    quoteTriggers = getContracts @CalculateAggregatedQuoteBotTrigger activeContracts
+    quoteTriggers = getContracts @CalculateAggregatedQuote activeContracts
     allTransportQuotes = getContracts @TransportQuote activeContracts
     allInventoryQuotes = getContracts @InventoryQuote activeContracts
     allInventoryItems = getContracts @InventoryItem activeContracts

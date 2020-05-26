@@ -33,11 +33,11 @@ createItem party productName =
     quantity = 0
     unitPrice = 0.0
 
-createRequest : Party -> Text -> InventoryQuoteRequestBotTrigger
+createRequest : Party -> Text -> InventoryQuoteRequest
 createRequest party productName = do
   let sampleDate = date 1970 Jan 1
   let product = OrderedProduct productName 0 sampleDate sampleDate
-  InventoryQuoteRequestBotTrigger with
+  InventoryQuoteRequest with
         workflowId = ""
         warehouse = party
         supplier = party
