@@ -98,7 +98,9 @@ template DeliveryInstruction
         do
           now <- getTime
           let today = toDateUTC now
-          assertMsg ("Pick up should happen on the pickup date: " <> show pickUpDate) $ (today == pickUpDate)
+          if today == pickUpDate
+          then pure ()
+          else debug ("Error ignored for the sake of demo: Pick up should happen on the pickup date: " <> show pickUpDate)
           create PickUpRequest with ..
 
 -- The Delivery contract is a notification for the buyer that an item is
@@ -127,7 +129,9 @@ template Delivery
         do
           now <- getTime
           let today = toDateUTC now
-          assertMsg ("Delivery should happen on the delivery date: " <> show deliveryDate) $ (today == deliveryDate)
+          if today == deliveryDate
+          then pure ()
+          else debug ("Error ignored for the sake of demo: Delivery should happen on the delivery date: " <> show deliveryDate)
           -- Payment must happen in a choice which is not visible to warehouse and transportCompany
           create DeliveryComplete with ..
 
