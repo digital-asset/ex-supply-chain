@@ -5,7 +5,6 @@
 package com.digitalasset.refapps.supplychain;
 
 import static com.digitalasset.testing.Dsl.list;
-import static com.digitalasset.testing.Dsl.party;
 import static com.digitalasset.testing.Dsl.record;
 import static com.digitalasset.testing.Dsl.text;
 
@@ -48,7 +47,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
-import java.util.concurrent.TimeoutException;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -112,17 +110,6 @@ public class SupplychainIT {
 
   private Trigger createTrigger(String triggerName, Party party) {
     return trigger.triggerName(triggerName).party(party).build();
-  }
-
-  @Test(expected = TimeoutException.class)
-  public void testPartyIsCorrect() {
-    sandbox
-        .getLedgerAdapter()
-        .getCreatedContractId(
-            BUYER_PARTY,
-            BuyerSellerRelationship.TEMPLATE_ID,
-            record(BUYER_PARTY, BUYER_ADDRESS, party("Someone1")),
-            BuyerSellerRelationship.ContractId::new);
   }
 
   @Test
