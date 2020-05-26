@@ -149,17 +149,6 @@ To switch users:
 1. Click the name of the current party at the top of the screen.
 2. On the home screen, select a different party.
 
-### Setting the System Date
-
-The system date is visible in the top-right corner after you log in. The application starts with the example system date of June 3, 2019.
-
-To change the system date:
-
-1. Log in as any role.
-2. Click on current date.
-3. Select the new date in the calendar view.
-4. Choose the **Set** button.
-
 ### Setup
 
 During Navigator startup, the basic buyer-seller relationship and other reference data is set up.
@@ -292,7 +281,7 @@ _Note:_ You cannot click on the contract if you did not start the triggers. In t
 1. Log in as a Transport Company (TransportCompany1, TransportCompany2).
 2. Choose the **Delivery Instruction** tab.
 3. Click on the contract.
-4. Set the ledger date to the pickup date of the delivery instruction.
+4. In a real system we could check if it is the pickup date of the delivery instruction, but we don't require this for sake of the demo.
 5. Select the **DeliveryInstruction_PickUp** choice.
 6. Choose **Submit**.
 
@@ -317,7 +306,7 @@ _Note:_ You cannot click on the contract if you did not start the triggers. In t
 1. Log in as Buyer.
 2. Choose the **Delivery** tab.
 3. Click on the contract.
-4. Set the ledger date to the delivery date.
+4. In a real system we could check if it is the delivery date, but we don't require this for sake of the demo.
 5. Select the **Delivery_Acknowledge** choice.
 6. Choose **Submit**.
 
