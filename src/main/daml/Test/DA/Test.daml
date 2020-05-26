@@ -4,13 +4,13 @@
 --
 
 daml 1.2
-module DA.RefApps.SupplyChain.Test where
+module Test.DA.Test where
 
 import DA.List
 import DA.Date
 import DA.Assert
 
-import DA.RefApps.SupplyChain.Scenarios
+import Test.DA.Scenarios
 import DA.RefApps.SupplyChain.Relationship
 import DA.RefApps.SupplyChain.Types
 import DA.RefApps.SupplyChain.Payment

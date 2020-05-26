@@ -4,7 +4,7 @@
 --
 
 daml 1.2
-module DA.RefApps.SupplyChain.Scenarios where
+module Test.DA.Scenarios where
 
 import DA.Date
 import DA.Assert
