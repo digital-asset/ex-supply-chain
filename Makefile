@@ -6,8 +6,7 @@ JS_CODEGEN_DIR=daml.js
 JS_CODEGEN_ARTIFACT=$(JS_CODEGEN_DIR)/supplychain-1.0.0/package.json
 UI_INSTALL_ARTIFACT=ui/node_modules
 UI_BUILD_ARTIFACT=ui/build/index.html
-
-build: $(UI_BUILD_ARTIFACT)
+UI_DEPLOY_ARTIFACT=deploy/ui.zip
 
 $(DAR): $(DAML_SRC)
 	daml build --output $@
@@ -18,13 +17,16 @@ $(JS_CODEGEN_ARTIFACT): $(DAR)
 $(UI_INSTALL_ARTIFACT): ui/package.json ui/yarn.lock $(JS_CODEGEN_ARTIFACT)
 	cd ui && yarn install --force --frozen-lockfile
 
+build: $(UI_INSTALL_ARTIFACT)
+
 $(UI_BUILD_ARTIFACT): $(UI_INSTALL_ARTIFACT) $(TS_SRC)
 	cd ui && yarn build
 
-deploy: build
+$(UI_DEPLOY_ARTIFACT): $(UI_BUILD_ARTIFACT)
 	mkdir -p deploy
-	cp $(DAR) deploy
-	cd ui && zip -r ../deploy/ui.zip build
+	cd ui && zip -r ../$(UI_DEPLOY_ARTIFACT) build
+
+deploy: $(UI_DEPLOY_ARTIFACT)
 
 clean:
 	rm -rf .daml
