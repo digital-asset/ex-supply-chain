@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import React from "react";
 import { History } from 'history';
 import { createToken, dablLoginUrl } from "../config";
@@ -82,7 +86,6 @@ function useUserDispatch() {
 function loginUser(
     dispatch : React.Dispatch<LoginAction>,
     party : string,
-    userToken : string,
     history : History,
     setIsLoading : React.Dispatch<React.SetStateAction<boolean>>,
     setError : React.Dispatch<React.SetStateAction<boolean>>) {
@@ -90,7 +93,7 @@ function loginUser(
   setIsLoading(true);
 
   if (!!party) {
-    const token = userToken || createToken(party)
+    const token = createToken(party)
     localStorage.setItem("daml.party", party);
     localStorage.setItem("daml.token", token);
 

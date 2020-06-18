@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import React from "react";
 import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";

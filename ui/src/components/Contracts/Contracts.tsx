@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 import React, { useState } from "react";
 import { DialogTitle, DialogContent, Dialog, DialogActions,
          FormControl, InputLabel, Select, MenuItem, Grid, Table,

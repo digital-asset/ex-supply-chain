@@ -33,7 +33,7 @@ commands:
     steps:
       - run:
           command: |
-            ./scripts/install-daml.sh << parameters.version >>
+            curl -sSL https://get.daml.com/ | sh /dev/stdin << parameters.version >>
 
 jobs:
   mvn_test:

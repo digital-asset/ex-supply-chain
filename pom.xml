@@ -197,6 +197,7 @@
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
                         <java>SLASHSTAR_STYLE</java>
+                        <tsx>SLASHSTAR_STYLE</tsx>
                         <Dockerfile>SCRIPT_STYLE</Dockerfile>
                     </mapping>
                 </configuration>
