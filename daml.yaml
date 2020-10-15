@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-sdk-version: 1.5.0
+sdk-version: 1.6.0
 name: supplychain
 source: src/main/daml
 init-script: DA.RefApps.SupplyChain.LedgerSetupScript:initialize
