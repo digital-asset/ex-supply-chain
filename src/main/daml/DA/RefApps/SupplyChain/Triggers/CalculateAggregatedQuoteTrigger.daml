@@ -9,7 +9,6 @@ module DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger where
 
 import Daml.Trigger
 import DA.Foldable (forA_) -- hiding (length, any)
-import DA.Next.Map qualified as Map
 
 import DA.RefApps.SupplyChain.Inventory
 import DA.RefApps.SupplyChain.Quote
@@ -19,8 +18,8 @@ import DA.Record (HasField)
 
 trigger : Trigger ()
 trigger = Trigger
-  { initialize = const ()
-  , updateState = \_ _ _ -> ()
+  { initialize = pure ()
+  , updateState = \_ -> pure ()
   , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @CalculateAggregatedQuote
@@ -31,8 +30,12 @@ trigger = Trigger
   , heartbeat = None
   }
 
-triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
-triggerRule _party activeContracts _ _ () =
+triggerRule : Party -> TriggerA () ()
+triggerRule _party = do
+  quoteTriggers <- query @CalculateAggregatedQuote
+  allTransportQuotes <- query @TransportQuote
+  allInventoryQuotes <- query @InventoryQuote
+  allInventoryItems <- query @InventoryItem
   forA_ quoteTriggers $ \(quoteCid, quote) -> do
     let transportQuotes = quotesForWorkflow quote.workflowId allTransportQuotes
     let inventoryQuotes = quotesForWorkflow quote.workflowId allInventoryQuotes
@@ -44,10 +47,6 @@ triggerRule _party activeContracts _ _ () =
       inventoryQuoteCids = map fst inventoryQuotes
       inventoryItemCids = map fst inventoryItems
   where
-    quoteTriggers = getContracts @CalculateAggregatedQuote activeContracts
-    allTransportQuotes = getContracts @TransportQuote activeContracts
-    allInventoryQuotes = getContracts @InventoryQuote activeContracts
-    allInventoryItems = getContracts @InventoryItem activeContracts
     quotesForWorkflow : HasField "workflowId" r WorkflowId => WorkflowId -> [(a, r)] -> [(a, r)]
     quotesForWorkflow workflowId = filter (\(_, quote) -> workflowId == quote.workflowId)
 

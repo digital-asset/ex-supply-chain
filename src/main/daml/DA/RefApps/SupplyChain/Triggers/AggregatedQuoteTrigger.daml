@@ -9,14 +9,13 @@ module DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger where
 
 import Daml.Trigger
 import DA.Foldable hiding (length)
-import DA.Next.Map
 
 import DA.RefApps.SupplyChain.Aggregate
 
 trigger : Trigger ()
 trigger = Trigger
-  { initialize = const ()
-  , updateState = \_ _ _ -> ()
+  { initialize = pure ()
+  , updateState = \_ -> pure ()
   , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @AggregatedQuoteTrigger
@@ -24,9 +23,8 @@ trigger = Trigger
   , heartbeat = None
   }
 
-triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
-triggerRule _party activeContracts _ _ () =
+triggerRule : Party -> TriggerA () ()
+triggerRule _party = do
+  aggregatedQuotes <- query @AggregatedQuoteTrigger
   forA_ aggregatedQuotes $ \(cid, _) ->
     dedupExercise cid AggregatedQuoteTrigger_Execute
-  where
-    aggregatedQuotes = getContracts @AggregatedQuoteTrigger activeContracts

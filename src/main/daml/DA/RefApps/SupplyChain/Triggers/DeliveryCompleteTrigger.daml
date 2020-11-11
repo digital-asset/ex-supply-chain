@@ -9,14 +9,13 @@ module DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger where
 
 import Daml.Trigger
 import DA.Foldable hiding (length)
-import DA.Next.Map
 
 import DA.RefApps.SupplyChain.Delivery
 
 trigger : Trigger ()
 trigger = Trigger
-  { initialize = const ()
-  , updateState = \_ _ _ -> ()
+  { initialize = pure ()
+  , updateState = \_ -> pure ()
   , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @DeliveryComplete
@@ -24,9 +23,8 @@ trigger = Trigger
   , heartbeat = None
   }
 
-triggerRule : Party -> ACS -> Time -> Map CommandId [Command] -> () -> TriggerA ()
-triggerRule _party activeContracts _ _ () =
+triggerRule : Party -> TriggerA () ()
+triggerRule _party = do
+  deliveryCompletes <- query @DeliveryComplete
   forA_ deliveryCompletes $ \(cid, _) ->
     dedupExercise cid DeliveryComplete_Accept
-  where
-    deliveryCompletes = getContracts @DeliveryComplete activeContracts

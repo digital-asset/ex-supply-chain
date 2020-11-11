@@ -9,15 +9,14 @@ module DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger where
 
 import Daml.Trigger
 import DA.Foldable hiding (length)
-import DA.Next.Map qualified as Map
 
 import DA.RefApps.SupplyChain.Inventory
 import DA.RefApps.SupplyChain.QuoteRequest
 
 trigger : Trigger ()
 trigger = Trigger
-  { initialize = const ()
-  , updateState = \_ _ _ -> ()
+  { initialize = pure ()
+  , updateState = \_ -> pure ()
   , rule = triggerRule
   , registeredTemplates = RegisteredTemplates [
       registeredTemplate @InventoryQuoteRequest
@@ -26,8 +25,10 @@ trigger = Trigger
   , heartbeat = None
   }
 
-triggerRule : Party -> ACS -> Time -> Map.Map CommandId [Command] -> () -> TriggerA ()
-triggerRule _party activeContracts _ _ () =
+triggerRule : Party -> TriggerA () ()
+triggerRule _party = do
+  inventoryQuoteRequests <- query @InventoryQuoteRequest
+  allInventoryItems <- query @InventoryItem
   forA_ inventoryQuoteRequests $ \(requestCid, request) ->
     case itemMatching request allInventoryItems of
       Some (inventoryItemCid, _) ->
@@ -35,9 +36,6 @@ triggerRule _party activeContracts _ _ () =
       None ->
         -- we can change it to error to fail the trigger
         debug $ "No inventory item found for: " <> show request.product.productName <> " in " <> show request.warehouse
-  where
-    inventoryQuoteRequests = getContracts @InventoryQuoteRequest activeContracts
-    allInventoryItems = getContracts @InventoryItem activeContracts
 
 matches : InventoryItem -> InventoryQuoteRequest -> Bool
 matches item request =
