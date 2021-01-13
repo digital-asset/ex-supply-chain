@@ -99,41 +99,7 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <!-- create a jar without the version number, for easier Dockerfile  -->
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>supplychain</finalName>
-                            <archive>
-                                <manifest>
-                                    <addClasspath>true</addClasspath>
-                                    <classpathPrefix>lib</classpathPrefix>
-                                    <mainClass>com.digitalasset.refapps.supplychain.SupplyChain</mainClass>
-                                </manifest>
-                            </archive>
-                            <classifier>docker</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib</classpathPrefix>
-                            <mainClass>com.digitalasset.refapps.supplychain.SupplyChain</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
+           <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.0.0-M3</version>
@@ -260,14 +226,12 @@
                         <exclude>**/.daml/package-database/**/*.*</exclude>
                         <exclude>ui/node_modules/**</exclude>
                         <exclude>ui/build/**</exclude>
-                        <exclude>.dockerignore</exclude>
                         <exclude>**/*.dar</exclude>
                     </excludes>
                     <mapping>
                         <daml>DOUBLEDASHES_STYLE</daml>
                         <java>SLASHSTAR_STYLE</java>
                         <tsx>SLASHSTAR_STYLE</tsx>
-                        <Dockerfile>SCRIPT_STYLE</Dockerfile>
                     </mapping>
                 </configuration>
                 <executions>

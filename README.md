@@ -19,10 +19,6 @@ The Supply Chain application demonstrates a generic example between a Buyer, Sel
 
 Be sure you have the following installed.
 
-There are two options to run the app:
-- Option 1: with Docker. Requires:
-  - Docker
-- Option 2: in standalone mode. Requires:
   - [DAML SDK](https://docs.daml.com/)
   - Java
   - Yarn
@@ -30,19 +26,6 @@ There are two options to run the app:
   - Make
 
 ### Starting the App
-
-#### Start App with Docker
-
-Note: make sure to have at least 8 GBs of memory allocated to Docker.
-
-1. Type:
-    ```shell
-    docker-compose up --build
-    ```
-2. Open UI with a browser at http://localhost:7500.
-
-
-#### Start App in Standalone Mode
 
 1. Build the App. Type:
     ```shell
@@ -66,14 +49,6 @@ Note: make sure to have at least 8 GBs of memory allocated to Docker.
 
 ### Stopping the App
 
-#### Stopping Dockerized Run
-1. Stop the Docker containers by pressing **Ctrl+C**.
-1. If you want to cleanup Docker for a fresh restart, type
-    ```
-    docker-compose down --volumes --remove-orphans
-    ```
-
-#### Stopping Standalone Run
 1. Stop the triggers by pressing **Ctrl+C**.
 1. Stop the Sandbox and the Navigator by pressing **Ctrl+C** in the DAML assistant.
 
@@ -81,7 +56,7 @@ Note: make sure to have at least 8 GBs of memory allocated to Docker.
 
 Reset the application by following these steps:
 1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
-2.  Start the app in [Docker](#start-app-with-docker) or [Standalone](#start-app-in-standalone-mode) by following the steps in the relevant section.
+2.  Start the app by following the steps in [Starting the App](#starting-the-app) section.
 
 ## Working with DAML Hub
 
