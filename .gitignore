@@ -3,9 +3,9 @@ target
 .idea
 *.iml
 .daml
-node_modules
 .classpath
 .project
 .settings/
 .vscode/
 ui/build
+ui/node_modules

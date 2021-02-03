@@ -1,6 +1,11 @@
 .PHONY: build
 build: build-dars build-ui
 
+.PHONY: clean
+clean:
+	rm -rf .daml triggers/.daml
+	rm -rf ui/node_modules
+	rm -rf target
 
 ### DARS ###
 
@@ -39,12 +44,3 @@ $(UI_INSTALL_ARTIFACT): ui/package.json ui/yarn.lock $(JS_CODEGEN_ARTIFACT)
 
 .PHONY: build-ui
 build-ui: $(UI_INSTALL_ARTIFACT)
-
-
-.PHONY: clean
-clean:
-	rm -rf .daml
-	rm -rf daml.js
-	rm -rf ui/node_modules
-	rm -rf target
-	rm -rf triggers/.daml
