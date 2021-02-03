@@ -1,16 +1,17 @@
+MODELS_DAR=target/supplychain.dar
+TRIGGERS_DAR=target/triggers.dar
+JS_CODEGEN_DIR=ui/daml.js
+
 .PHONY: build
 build: build-dars build-ui
 
 .PHONY: clean
 clean:
 	rm -rf .daml triggers/.daml
-	rm -rf ui/node_modules
+	rm -rf ui/node_modules $(JS_CODEGEN_DIR)
 	rm -rf target
 
 ### DARS ###
-
-MODELS_DAR=target/supplychain.dar
-TRIGGERS_DAR=target/triggers.dar
 
 .PHONY: build-dars
 build-dars: $(MODELS_DAR) $(TRIGGERS_DAR)
@@ -28,7 +29,6 @@ $(TRIGGERS_DAR): $(TRIGGERS_DAML_SRC) triggers/daml.yaml $(MODELS_DAR)
 
 ### JS Codegen ###
 
-JS_CODEGEN_DIR=ui/daml.js
 JS_CODEGEN_ARTIFACT=$(JS_CODEGEN_DIR)/supplychain-1.0.0/package.json
 
 $(JS_CODEGEN_ARTIFACT): $(MODELS_DAR)
