@@ -24,7 +24,7 @@ $(MODELS_DAR): $(DAML_SRC) daml.yaml
 TRIGGERS_DAML_SRC=$(shell find triggers/src/ -name '*.daml')
 
 $(TRIGGERS_DAR): $(TRIGGERS_DAML_SRC) triggers/daml.yaml $(MODELS_DAR)
-	daml build --project-root triggers --output ../$@
+	cd triggers && daml build --output ../$@
 
 
 ### JS Codegen ###
