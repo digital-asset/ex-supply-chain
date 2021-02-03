@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@daml.js/supplychain-1.0.0": "file:../target/daml.js/supplychain-1.0.0",
+    "@daml.js/supplychain-1.0.0": "file:daml.js/supplychain-1.0.0",
     "@daml/ledger": "1.7.0",
     "@daml/react": "1.7.0",
     "@daml/types": "1.7.0",

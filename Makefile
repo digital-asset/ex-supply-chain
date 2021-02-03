@@ -28,7 +28,7 @@ $(TRIGGERS_DAR): $(TRIGGERS_DAML_SRC) triggers/daml.yaml $(MODELS_DAR)
 
 ### JS Codegen ###
 
-JS_CODEGEN_DIR=target/daml.js
+JS_CODEGEN_DIR=ui/daml.js
 JS_CODEGEN_ARTIFACT=$(JS_CODEGEN_DIR)/supplychain-1.0.0/package.json
 
 $(JS_CODEGEN_ARTIFACT): $(MODELS_DAR)
