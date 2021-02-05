@@ -27,6 +27,11 @@ $(TRIGGERS_DAR): $(TRIGGERS_DAML_SRC) triggers/daml.yaml $(MODELS_DAR)
 	cd triggers && daml build --output ../$@
 
 
+.PHONY: test-dars
+test-dars: build-dars
+	daml test
+	cd triggers && daml test
+
 ### JS Codegen ###
 
 JS_CODEGEN_ARTIFACT=$(JS_CODEGEN_DIR)/supplychain-1.0.0/package.json
