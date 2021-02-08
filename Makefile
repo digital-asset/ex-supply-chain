@@ -26,11 +26,11 @@ TRIGGERS_DAML_SRC=$(shell find triggers/src/ -name '*.daml')
 $(TRIGGERS_DAR): $(TRIGGERS_DAML_SRC) triggers/daml.yaml $(MODELS_DAR)
 	cd triggers && daml build --output ../$@
 
-
 .PHONY: test-dars
 test-dars: build-dars
-	daml test
-	cd triggers && daml test
+	daml test --junit target/daml-test-reports/model.xml
+	cd triggers && daml test --junit ../target/daml-test-reports/triggers.xml
+
 
 ### JS Codegen ###
 
