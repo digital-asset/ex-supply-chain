@@ -1,5 +1,5 @@
 MODELS_DAR=target/supplychain.dar
-TRIGGERS_DAR=target/triggers.dar
+TRIGGERS_DAR=target/supplychain-triggers.dar
 JS_CODEGEN_DIR=ui/daml.js
 
 .PHONY: build

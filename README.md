@@ -39,7 +39,7 @@ Be sure you have the following installed.
     The navigator will automatically open in new browser tab at http://localhost:7500.
 3. Once the sandbox has started, start the automation logic by starting triggers. Type:
     ```shell
-    scripts/startTriggers.sh localhost 6865 target/triggers.dar
+    scripts/startTriggers.sh localhost 6865 target/supplychain-triggers.dar
     ```
 4. Once the sandbox has started, start the automation logic by starting triggers. Type:
     ```shell

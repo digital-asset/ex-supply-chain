@@ -30,7 +30,7 @@
         <daml.model.projectDir>${project.basedir}</daml.model.projectDir>
         <daml.model.dar>${project.build.directory}/supplychain.dar</daml.model.dar>
         <daml.triggers.projectDir>${project.basedir}/triggers</daml.triggers.projectDir>
-        <daml.triggers.dar>${project.build.directory}/triggers.dar</daml.triggers.dar>
+        <daml.triggers.dar>${project.build.directory}/supplychain-triggers.dar</daml.triggers.dar>
     </properties>
     <dependencies>
         <dependency>
