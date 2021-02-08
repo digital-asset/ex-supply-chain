@@ -57,7 +57,8 @@ import org.junit.rules.TestRule;
 public class SupplychainIT {
 
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/supplychain.dar");
-  private static final Path RELATIVE_TRIGGER_DAR_PATH = Paths.get("./target/supplychain-triggers.dar");
+  private static final Path RELATIVE_TRIGGER_DAR_PATH =
+      Paths.get("./target/supplychain-triggers.dar");
   private static final String TEST_MODULE = "DA.RefApps.SupplyChain.LedgerSetupScript";
   private static final String TEST_SCRIPT = "initialize";
 
