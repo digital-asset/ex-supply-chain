@@ -207,6 +207,15 @@ workflows:
       - ui_test:
           daml_sdk_version: "1.9.0"
           context: refapps
+      - blackduck_check:
+          daml_sdk_version: "1.9.0"
+          filters:
+            branches:
+              only:
+                - /blackduck/
+          context:
+            - blackduck
+            - refapps
   scheduled_test:
     triggers:
       - schedule:
