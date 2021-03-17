@@ -30,6 +30,8 @@ const overrides = {
   },
 };
 
-export default {
+const styles = {
   default: createMuiTheme({ ...defaultTheme, ...overrides }),
 };
+
+export default styles;

@@ -14,7 +14,7 @@ const info = "#9013FE";
 const lightenRate = 7.5;
 const darkenRate = 15;
 
-export default {
+const styles = {
   palette: {
     primary: {
       main: primary,
@@ -81,3 +81,5 @@ export default {
       "0px 12px 33px 0px #E8EAFC, 0 3px 3px -2px #B2B2B21A, 0 1px 8px 0 #9A9A9A1A",
   },
 };
+
+export default styles;
