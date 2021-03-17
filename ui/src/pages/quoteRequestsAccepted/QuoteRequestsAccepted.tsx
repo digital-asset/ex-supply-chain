@@ -10,11 +10,11 @@ import { QuoteRequestAccepted }
 import { useState } from "react";
 import { CreateEvent } from "@daml/ledger";
 import { OrderedProductList } from "../quoteRequests/OrderedProductList";
-import { SortedPartyNames } from "../login/Login";
+import { useSortedPartyNames } from "../login/Login";
 
 export default function QuoteRequestsAccepted() {
 
-  const parties = new SortedPartyNames().getParties();
+  const parties = useSortedPartyNames();
 
   const party = useParty();
   const ledger = useLedger();

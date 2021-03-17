@@ -2,7 +2,7 @@
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Button,
   CircularProgress,
@@ -45,35 +45,32 @@ async function getParties(): Promise<any[]> {
   return result;
 }
 
-export class SortedPartyNames {
-  private parties: any[];
-
-  private compareByDisplayName(p1 : any, p2 : any) {
-    if ( p1.displayName < p2.displayName ){
-      return -1;
-    }
-    if ( p1.displayName > p2.displayName ){
-      return 1;
-    }
-    return 0;
+function compareByDisplayName(p1: { displayName: string; }, p2: { displayName: string; }): number {
+  if ( p1.displayName < p2.displayName ){
+    return -1;
   }
-
-  private addSpacesBetweenWordsInDisplayName(p: any) {
-    return {...p, displayName: addSpacesBetweenWords(p.displayName)};
+  if ( p1.displayName > p2.displayName ){
+    return 1;
   }
+  return 0;
+}
 
-  constructor() {
-    var [parties, setParties] = useState([] as any[]);
-    const partiesPromiseMemo = useMemo(() => getParties(), []);
-    partiesPromiseMemo.then(ps => setParties(ps));
-    this.parties = parties;
-  }
+function addSpacesBetweenWordsInDisplayName(p: any) {
+  return {...p, displayName: addSpacesBetweenWords(p.displayName)};
+}
 
-  getParties() {
-    return this.parties
-      .sort(this.compareByDisplayName)
-      .map(this.addSpacesBetweenWordsInDisplayName, this);
-  }
+function sortParties(parties: any[]): any[] {
+  return parties
+      .sort(compareByDisplayName)
+      .map(addSpacesBetweenWordsInDisplayName);
+}
+
+export function useSortedPartyNames(): any[] {
+  var [parties, setParties] = useState([] as any[]);
+  useEffect(() => {
+    getParties().then(ps => setParties(sortParties(ps)));
+  }, []);
+  return parties;
 }
 
 function Login(props : RouteComponentProps) {

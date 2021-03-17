@@ -10,12 +10,12 @@ import { SupplyRequest }
 import { useState } from "react";
 import { CreateEvent } from "@daml/ledger";
 import { OrderedProductList } from "../quoteRequests/OrderedProductList";
-import { SortedPartyNames } from "../login/Login";
+import { useSortedPartyNames } from "../login/Login";
 
 
 export default function SupplyRequests() {
 
-  const parties = new SortedPartyNames().getParties();
+  const parties = useSortedPartyNames();
 
   const ledger = useLedger();
   const roles =

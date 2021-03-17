@@ -200,7 +200,7 @@ To request a quote:
 1. Click on the **Send Quote Request** choice.
 1. Click **Add**.
 1. Fill in the parameters:
-    * productName: the name of the ordered product (_must match an existing inventory item_, see them on the Inventory page logged in as Supplier)
+    * productName: the name of the ordered product (_must match an existing inventory item_, so use either "Product 1" or "Product 2")
     * quantity: the ordered quantity
     * deliveryFrom: the start of the acceptable delivery period
     * deliveryTo: the end of the acceptable delivery period
