@@ -56,7 +56,7 @@ triggerProceedsWithAllQuotesWithMatchingItemsTest = script do
         inventoryItemCids = [item1, item2]
   assertExerciseCmd commands $ \(cid, actualChoice) -> do
     trigger2 === cid
-    assertProceedsEqual expectedChoice2 actualChoice
+    assertEqChoices expectedChoice2 actualChoice
   where
     createTrigger : Party -> WorkflowId -> CalculateAggregatedQuote
     createTrigger party workflowId =
@@ -67,15 +67,12 @@ triggerProceedsWithAllQuotesWithMatchingItemsTest = script do
         buyerAddress = ""
         seller = party
         products = []
-    assertProceedsEqual: CalculateAggregatedQuote_Proceed -> CalculateAggregatedQuote_Proceed -> Either Text ()
-    assertProceedsEqual lhs rhs = do
-      let sortedLhs = lhs with
-            inventoryQuoteCids = sort lhs.inventoryQuoteCids
-            inventoryItemCids = sort lhs.inventoryItemCids
-      let sortedRhs = rhs with
-            inventoryQuoteCids = sort rhs.inventoryQuoteCids
-            inventoryItemCids = sort rhs.inventoryItemCids
-      sortedLhs === sortedRhs
+    assertEqChoices: CalculateAggregatedQuote_Proceed -> CalculateAggregatedQuote_Proceed -> Either Text ()
+    assertEqChoices lhs rhs = do
+      sorted lhs === sorted rhs
+    sorted c = c with
+            inventoryQuoteCids = sort c.inventoryQuoteCids
+            inventoryItemCids = sort c.inventoryItemCids
 
 matchesChecksBothProductnameAndWarehouseTest : Script ()
 matchesChecksBothProductnameAndWarehouseTest = script do
