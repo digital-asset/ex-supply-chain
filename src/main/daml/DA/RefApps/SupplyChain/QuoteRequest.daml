@@ -16,7 +16,7 @@ import DA.RefApps.SupplyChain.Aggregate
 import DA.RefApps.SupplyChain.Lock
 import DA.RefApps.SupplyChain.Inventory
 
-import DA.Next.Map qualified as M
+import DA.Map qualified as M
 
 warehouseAddresses : M.Map Text Text
 warehouseAddresses =
