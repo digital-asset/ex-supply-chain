@@ -183,10 +183,13 @@ jobs:
             bash <(curl -s https://raw.githubusercontent.com/DACH-NY/security-blackduck/master/synopsys-detect) \
             ci-build digitalasset_ex-supply-chain master \
             --logging.level.com.synopsys.integration=DEBUG \
-            --detect.notices.report=true \
-            --detect.timeout=3600
+            --detect.notices.report=false \
+            --detect.timeout=7200
       - run:
           command: cp digitalasset_ex_supply_chain_master_Black_Duck_Notices_Report.txt NOTICE
+      - store_artifacts:
+          name: Store the Blackduck run artifacts
+          path: /home/circleci/blackduck/runs
       - persist_to_workspace:
           root: .
           paths:
