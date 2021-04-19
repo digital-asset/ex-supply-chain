@@ -18,7 +18,7 @@
     </appender>
 
     <logger name="com.digitalasset" level="INFO" />
-    <logger name="com.digitalasset.refapps" level="DEBUG" />
+    <logger name="com.daml.product" level="DEBUG" />
     <logger name="com.daml" level="INFO" />
     <root level="INFO">
         <appender-ref ref="STDOUT" />
