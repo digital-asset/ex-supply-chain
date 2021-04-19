@@ -2,7 +2,7 @@
  * Copyright (c) 2019, Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-package com.digitalasset.refapps.supplychain;
+package com.daml.product.supplychain;
 
 import static com.daml.extensions.testing.Dsl.list;
 import static com.daml.extensions.testing.Dsl.record;
@@ -13,8 +13,8 @@ import com.daml.extensions.testing.ledger.DefaultLedgerAdapter;
 import com.daml.extensions.testing.utils.ContractWithId;
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
-import com.digitalasset.refapps.supplychain.trigger.Builder;
-import com.digitalasset.refapps.supplychain.trigger.Trigger;
+import com.daml.product.supplychain.trigger.Builder;
+import com.daml.product.supplychain.trigger.Trigger;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.supplychain.aggregate.AggregatedQuote;
