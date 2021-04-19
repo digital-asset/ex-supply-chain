@@ -4,17 +4,17 @@
  */
 package com.digitalasset.refapps.supplychain;
 
-import static com.digitalasset.testing.Dsl.list;
-import static com.digitalasset.testing.Dsl.record;
-import static com.digitalasset.testing.Dsl.text;
+import static com.daml.extensions.testing.Dsl.list;
+import static com.daml.extensions.testing.Dsl.record;
+import static com.daml.extensions.testing.Dsl.text;
 
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
 import com.digitalasset.refapps.supplychain.trigger.Builder;
 import com.digitalasset.refapps.supplychain.trigger.Trigger;
-import com.digitalasset.testing.junit4.Sandbox;
-import com.digitalasset.testing.ledger.DefaultLedgerAdapter;
-import com.digitalasset.testing.utils.ContractWithId;
+import com.daml.extensions.testing.junit4.Sandbox;
+import com.daml.extensions.testing.ledger.DefaultLedgerAdapter;
+import com.daml.extensions.testing.utils.ContractWithId;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.supplychain.aggregate.AggregatedQuote;
