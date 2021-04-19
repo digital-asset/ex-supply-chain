@@ -35,6 +35,8 @@ run_trigger() {
       --ledger-party "$party"
 }
 
+scripts/waitForLedger.sh
+
 run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger Seller &
 run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger Seller &
 run_trigger DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger Warehouse1 &
