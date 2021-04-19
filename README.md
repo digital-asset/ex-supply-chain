@@ -41,17 +41,11 @@ Be sure you have the following installed.
     launchers/ui
     ```
 
-The demo will run at http://localhost:3000
+    The demo will run at http://localhost:3000
 
 ### Stopping the App
 
 1. Stop the every running command by pressing **Ctrl+C**.
-
-### Resetting the Prototype
-
-Reset the application by following these steps:
-1.  Stop the app by following the steps in [Stopping the App](#stopping-the-app) section.
-2.  Start the app by following the steps in [Starting the App](#starting-the-app) section.
 
 ## Working with DAML Hub
 
