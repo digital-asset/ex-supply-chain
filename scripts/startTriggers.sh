@@ -35,7 +35,7 @@ run_trigger() {
       --ledger-party "$party"
 }
 
-scripts/waitForLedger.sh
+scripts/waitForLedger.sh "$SANDBOX_HOST" "$SANDBOX_PORT"
 
 run_trigger DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger Seller &
 run_trigger DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger Seller &
