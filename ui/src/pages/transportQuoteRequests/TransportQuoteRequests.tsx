@@ -48,6 +48,7 @@ export default function TransportQuoteRequests() {
           { name: "Buyer", path: "payload.buyer" },
           { name: "Buyer Address", path: "payload.buyerAddress" },
           { name: "Transport Company", path: "payload.transportCompany" },
+          { name: "Warehouse", path: "payload.item.warehouseProduct.warehouse" },
           { name: "Supplier", path: "payload.supplier" },
         ]}
         actions={[
