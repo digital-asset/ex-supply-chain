@@ -173,8 +173,9 @@
                         <exclude>**/*.hi</exclude>
                         <exclude>**/*.hie</exclude>
                         <exclude>**/*.log</exclude>
-                        <exclude>**/.daml/**/*.*</exclude>
+                        <exclude>**/.daml/**</exclude>
                         <exclude>ui/node_modules/**</exclude>
+                        <exclude>ui/daml.js/**</exclude>
                         <exclude>ui/build/**</exclude>
                         <exclude>**/*.dar</exclude>
                     </excludes>
