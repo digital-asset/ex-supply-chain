@@ -37,7 +37,7 @@ const Layout = () => {
     return null;
   } else {
     return (
-      <DamlLedger party={user.party} token={user.token} httpBaseUrl={httpBaseUrl} wsBaseUrl={wsBaseUrl}>
+      <DamlLedger party={user.party.identifier} token={user.token} httpBaseUrl={httpBaseUrl} wsBaseUrl={wsBaseUrl}>
         <div className={classes.root}>
             <>
               <Header />

@@ -17,7 +17,7 @@ import Daml.Script
 -- Setup script to prepare the relationships and inventory
 initialize: Script ()
 initialize = do
-  let allocate x = allocatePartyWithHint x (PartyIdHint x)
+  let allocate x = allocatePartyWithHint x $ PartyIdHint $ "ledger-party-" <> x
 
   buyer <- allocate "Buyer"
   seller <- allocate "Seller"
