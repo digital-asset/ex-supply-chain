@@ -13,8 +13,6 @@ import com.daml.extensions.testing.ledger.DefaultLedgerAdapter;
 import com.daml.extensions.testing.utils.ContractWithId;
 import com.daml.ledger.javaapi.data.Party;
 import com.daml.ledger.javaapi.data.Text;
-import com.daml.product.supplychain.trigger.Builder;
-import com.daml.product.supplychain.trigger.Trigger;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import da.refapps.supplychain.aggregate.AggregatedQuote;
@@ -39,6 +37,7 @@ import da.refapps.supplychain.relationship.BuyerSellerRelationship;
 import da.refapps.supplychain.types.OrderedProduct;
 import da.refapps.supplychain.types.WarehouseProduct;
 import da.refapps.supplychain.types.WarehouseProductWithDates;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -47,14 +46,19 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collections;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SupplychainIT {
+  private final Logger logger = LoggerFactory.getLogger(getClass().getCanonicalName());
 
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/supplychain.dar");
   private static final Path RELATIVE_TRIGGER_DAR_PATH =
@@ -82,36 +86,30 @@ public class SupplychainIT {
           .build();
 
   @ClassRule public static ExternalResource sandboxClassRule = sandbox.getClassRule();
-  private final Builder trigger =
-      Trigger.builder()
-          .ledgerPort(sandbox::getSandboxPort)
-          .dar(RELATIVE_TRIGGER_DAR_PATH)
-          .ledgerHost("localhost");
+  private Process triggers;
 
-  @Rule
-  public TestRule sandboxRule =
-      RuleChain.outerRule(sandbox.getRule())
-          .around(
-              createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.AggregatedQuoteTrigger:trigger", SELLER_PARTY))
-          .around(
-              createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.DeliveryCompleteTrigger:trigger", SELLER_PARTY))
-          .around(
-              createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
-                  WAREHOUSE1_PARTY))
-          .around(
-              createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.InventoryQuoteRequestTrigger:trigger",
-                  WAREHOUSE2_PARTY))
-          .around(
-              createTrigger(
-                  "DA.RefApps.SupplyChain.Triggers.CalculateAggregatedQuoteTrigger:trigger",
-                  SUPPLIER_PARTY));
+  @Rule public TestRule sandboxRule = RuleChain.outerRule(sandbox.getRule());
 
-  private Trigger createTrigger(String triggerName, Party party) {
-    return trigger.triggerName(triggerName).party(party).build();
+  @Before
+  public void setUp() throws Throwable {
+    // Valid port is assigned only after the sandbox has been started.
+    // Therefore trigger has to be configured at the point where this can be guaranteed.
+    File log = new File("integration-triggers.log");
+    File errLog = new File("integration-triggers.err.log");
+    logger.debug("starting triggers");
+    triggers =
+        new ProcessBuilder()
+            // need to call Python directly for proper subprocess cleanup (not sure why though)
+            .command("scripts/startTriggers.py", Integer.toString(sandbox.getSandboxPort()))
+            .redirectOutput(ProcessBuilder.Redirect.appendTo(log))
+            .redirectError(ProcessBuilder.Redirect.appendTo(errLog))
+            .start();
+  }
+
+  @After
+  public void tearDown() {
+    // Use destroy() to allow subprocess cleanup.
+    triggers.destroy();
   }
 
   @Test
