@@ -54,12 +54,8 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SupplychainIT {
-  private final Logger logger = LoggerFactory.getLogger(getClass().getCanonicalName());
-
   private static final Path RELATIVE_DAR_PATH = Paths.get("./target/supplychain.dar");
   private static final Path RELATIVE_TRIGGER_DAR_PATH =
       Paths.get("./target/supplychain-triggers.dar");
@@ -96,7 +92,6 @@ public class SupplychainIT {
     // Therefore trigger has to be configured at the point where this can be guaranteed.
     File log = new File("integration-triggers.log");
     File errLog = new File("integration-triggers.err.log");
-    logger.debug("starting triggers");
     triggers =
         new ProcessBuilder()
             // need to call Python directly for proper subprocess cleanup (not sure why though)
