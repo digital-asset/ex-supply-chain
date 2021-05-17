@@ -166,6 +166,12 @@ jobs:
           keys:
             - m2-{{ checksum "pom.xml" }}-{{ checksum "daml.yaml" }}
             - m2
+      - run:
+          name: Install pipenv
+          command: |
+            sudo apt-get update || sudo apt-get update
+            sudo apt-get install python3-pip
+            pip3 install pipenv
       - install_sdk:
           version: << parameters.daml_sdk_version >>
       - save_cache:
@@ -192,7 +198,8 @@ jobs:
             bash <(curl -s https://raw.githubusercontent.com/DACH-NY/security-blackduck/master/synopsys-detect) \
             ci-build digitalasset_ex-supply-chain main \
             --logging.level.com.synopsys.integration=DEBUG \
-            --detect.excluded.detector.types=pip \
+            --detect.python.path="$(which python3)" \
+            --detect.pipenv.path="$(which pipenv)" \
             --detect.notices.report=true \
             --detect.timeout=3600
       - run:
