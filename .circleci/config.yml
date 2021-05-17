@@ -149,6 +149,10 @@ jobs:
           name: UI build
           command: |
             make package
+      - run:
+          name: Yarn test
+          command: |
+            cd ui && yarn test -- --watchAll=false
       - save_cache:
           paths:
             - ~/.daml
