@@ -20,7 +20,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <daml-sdk.version>1.13.0</daml-sdk.version>
+        <daml-sdk.version>1.13.1</daml-sdk.version>
         <junit.version>4.13.1</junit.version>
         <daml.model.projectDir>${project.basedir}</daml.model.projectDir>
         <daml.model.dar>${project.build.directory}/supplychain.dar</daml.model.dar>
