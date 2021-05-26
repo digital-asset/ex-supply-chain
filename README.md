@@ -24,6 +24,7 @@ Be sure you have the following installed.
   - Yarn
   - Node v12
   - Make
+  - [Python Pipenv](https://pipenv.pypa.io/)
 
 ### Starting the App
 
