@@ -155,6 +155,7 @@ jobs:
             - daml-{{ checksum "daml.yaml" }}
       - install_sdk:
           version: << parameters.daml_sdk_version >>
+      - install_python_dependencies
       - run:
           name: UI install dependencies
           command: |
