@@ -94,7 +94,6 @@ public class SupplychainIT {
     File errLog = new File("integration-triggers.err.log");
     triggers =
         new ProcessBuilder()
-            // need to call Python directly for proper subprocess cleanup (not sure why though)
             .command("launchers/automation", Integer.toString(sandbox.getSandboxPort()))
             .redirectOutput(ProcessBuilder.Redirect.appendTo(log))
             .redirectError(ProcessBuilder.Redirect.appendTo(errLog))
