@@ -94,7 +94,7 @@ jobs:
             - m2
       - install_sdk:
           version: << parameters.daml_sdk_version >>
-      - install_python_dependencies:
+      - install_python_dependencies
       - run:
           name: Python flake8
           command: |
@@ -184,7 +184,7 @@ jobs:
           keys:
             - m2-{{ checksum "pom.xml" }}-{{ checksum "daml.yaml" }}
             - m2
-      - install_python_dependencies:
+      - install_python_dependencies
       - install_sdk:
           version: << parameters.daml_sdk_version >>
       - save_cache:
