@@ -43,7 +43,6 @@ template QuoteRequest
         with
           workflowId: Text
         do
-          now <- getTime
           create QuoteRequestAccepted with ..
 
 -- Indicates that the seller accepted the QuoteRequest

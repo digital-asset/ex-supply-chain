@@ -40,10 +40,10 @@ initializeWithParties SupplyChainParties{..} = do
   -- Market setup
   buyerSellerRelInvitation <- submit buyer do
     createCmd $ BuyerSellerRelationshipInvitation buyer buyerAddress seller
-  buyerRole <- submit seller do
+  submit seller do
     exerciseCmd buyerSellerRelInvitation BuyerSellerRelationshipInvitation_Accept
 
-  inventoryW1P1Cid <- submit warehouse1 do
+  submit warehouse1 do
     createCmd InventoryItem
       with
         warehouse = warehouse1
@@ -51,7 +51,7 @@ initializeWithParties SupplyChainParties{..} = do
         productName = product01.productName
         quantity = 50
         unitPrice = 55.0
-  inventoryW1P2Cid <- submit warehouse1 do
+  submit warehouse1 do
     createCmd InventoryItem
       with
         warehouse = warehouse1
@@ -60,7 +60,7 @@ initializeWithParties SupplyChainParties{..} = do
         quantity = 100
         unitPrice = 60.0
 
-  inventoryW2P1Cid <- submit warehouse2 do
+  submit warehouse2 do
     createCmd InventoryItem
       with
         warehouse = warehouse2
@@ -68,7 +68,7 @@ initializeWithParties SupplyChainParties{..} = do
         productName = product01.productName
         quantity = 200
         unitPrice = 58.0
-  inventoryW2P2Cid <- submit warehouse2 do
+  submit warehouse2 do
     createCmd InventoryItem
       with
         warehouse = warehouse2

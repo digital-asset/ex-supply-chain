@@ -65,14 +65,14 @@ marginTest = script do
   parties@Parties{..} <- allocateParties
   setupData <- setup parties
 
-  quoteReq <- submit buyer do
+  submit buyer do
     exerciseCmd setupData.buyerRoleCid BuyerSellerRelationship_SendQuoteRequest with
                         products = [setupData.product01]
   now <- getTime
   let workflowId = show now
 
-  (transportPayReq, lockTrans) <- transportCommitmentHelper parties workflowId setupData.product01.productName setupData.product01.deliveryFrom
-  (warehousePayReq, lockedInv) <- lockedInventoryItemHelper parties workflowId setupData.product01.productName
+  (_, lockTrans) <- transportCommitmentHelper parties workflowId setupData.product01.productName setupData.product01.deliveryFrom
+  (_, lockedInv) <- lockedInventoryItemHelper parties workflowId setupData.product01.productName
 
   supplierPayReq <- submit supplier do
     createCmd PaymentRequest with
@@ -137,7 +137,7 @@ paymentTest = script do
   parties@Parties{..} <- allocateParties
   setupData <- setup parties
 
-  quoteReq <- submit buyer do
+  submit buyer do
     exerciseCmd setupData.buyerRoleCid BuyerSellerRelationship_SendQuoteRequest with
                         products = [setupData.product01]
 
@@ -146,7 +146,7 @@ paymentTest = script do
 
   setTime (time (date 2019 Dec 1) 0 0 0)
 
-  (transportPayReq, lockTrans) <- transportCommitmentHelper parties workflowId setupData.product01.productName setupData.product01.deliveryFrom
+  (_, lockTrans) <- transportCommitmentHelper parties workflowId setupData.product01.productName setupData.product01.deliveryFrom
 
   buyerPayReq <- submit seller do
     createCmd PaymentRequest with
@@ -154,7 +154,7 @@ paymentTest = script do
       payee = seller
       price = 11.1
 
-  (warehousePayReq, lockedInv) <- lockedInventoryItemHelper parties workflowId setupData.product01.productName
+  (_, lockedInv) <- lockedInventoryItemHelper parties workflowId setupData.product01.productName
 
   supplierPayReq <- submit supplier do
     createCmd PaymentRequest with
@@ -187,7 +187,7 @@ paymentTest = script do
   complete <- submit buyer do
     exerciseCmd delivery Delivery_Acknowledge
 
-  (deliveryPayment, buyerSellerObligation) <- submit seller do
+  (deliveryPayment, _) <- submit seller do
     exerciseCmd complete DeliveryComplete_Accept
 
   (supplierPayment, _) <- submit supplier do
