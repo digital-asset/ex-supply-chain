@@ -25,6 +25,4 @@ dependencies:
   - ../target/supplychain.dar
 build-options:
   - '--ghc-option'
-  - '-Werror'
-  - '--ghc-option'
-  - '-Wunused-binds'
+  - "-Werror -W -Wall -Wmissing-signatures"

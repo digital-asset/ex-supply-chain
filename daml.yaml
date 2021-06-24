@@ -25,6 +25,6 @@ dependencies:
   - daml-trigger
 build-options:
   - '--ghc-option'
-  - '-Werror'
-  - '--ghc-option'
-  - '-Wunused-binds'
+  - "-Werror -W -Wall -Wmissing-signatures \
+     -Wno-name-shadowing \
+     -Wno-unused-do-bind"
