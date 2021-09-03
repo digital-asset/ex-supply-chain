@@ -1187,8 +1187,8 @@
 "@daml.js/supplychain-1.0.0@file:daml.js/supplychain-1.0.0":
   version "1.15.0"
   dependencies:
-    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:../../../.cache/yarn/v6/npm-@daml-js-supplychain-1-0-0-1.16.0-012ea52c-eef1-4fc5-a339-1b5a14bdcbef-1628694790310/node_modules/@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
-    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:../../../.cache/yarn/v6/npm-@daml-js-supplychain-1-0-0-1.16.0-012ea52c-eef1-4fc5-a339-1b5a14bdcbef-1628694790310/node_modules/@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
+    "@daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7" "file:daml.js/40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7"
+    "@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662" "file:daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662"
     "@mojotech/json-type-validation" "^3.1.0"
 
 "@daml/dabl-react@file:./dabl-react":
@@ -1201,12 +1201,12 @@
     jsonwebtoken "^8.5.1"
     react "^16.12.0"
 
-"@daml/ledger@1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@daml/ledger/-/ledger-1.15.0.tgz#2538714c88b112092b1fa8aae4c85cc2ac6eb7e4"
-  integrity sha512-gGMJLt5ZRIB5DJ1NrwqgPv0mUWa7SP5Xl0EjGI8MunLBOQZSTTAdcXu1V9g/o1AvXT4I2To6+czjTGtCFfWPQA==
+"@daml/ledger@1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@daml/ledger/-/ledger-1.16.0.tgz#eaf2089f5d67206132a36e58d2fc495cd980ed91"
+  integrity sha512-v8Bw5pxtqPisR1AC8vr8X+vu5B3bEX/K0vAAHzAn6j3rCJbu3xPxGqPCdYIZK09JJMvUdbwZunDS1jV4Pcl8eQ==
   dependencies:
-    "@daml/types" "1.15.0"
+    "@daml/types" "1.16.0"
     "@mojotech/json-type-validation" "^3.1.0"
     cross-fetch "^3.0.4"
     events "^3.1.0"
@@ -1225,13 +1225,13 @@
     isomorphic-ws "^4.0.1"
     ws "^7.2.1"
 
-"@daml/react@1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@daml/react/-/react-1.15.0.tgz#f14ea765ee4b53b01d4e5562ca8b251b99ce2778"
-  integrity sha512-LEK2Ys/5FOg+8bGYI6H9a8w/XO6NTBBWIOWgTAXum5MMEZxAxWzC7MTbNOzLkBa0W61pau7l9AtwkDowQLWc3Q==
+"@daml/react@1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@daml/react/-/react-1.16.0.tgz#95182f65031e0bd5c918422b1dac37e0e9443411"
+  integrity sha512-4jZrvuDfweZ3APBNDokAEo73//R3z546IO0KaTe7rdMFuOnv33XvwqOD/Bboej72msNdSZNNKsTKWbd+T1ca+A==
   dependencies:
-    "@daml/ledger" "1.15.0"
-    "@daml/types" "1.15.0"
+    "@daml/ledger" "1.16.0"
+    "@daml/types" "1.16.0"
     react "^16.12.0"
 
 "@daml/react@1.7.0":
@@ -1243,10 +1243,10 @@
     "@daml/types" "1.7.0"
     react "^16.12.0"
 
-"@daml/types@1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@daml/types/-/types-1.15.0.tgz#ef7f0e3b35a1c43476a1804087657808d8cb2acd"
-  integrity sha512-7N+7zQYUBHG5AohjiyFfwd58bs3k+m6tFJGFHX3O6f3V0RjuK3BtSoSWVukBVU1CDg3A/rkOrhjC0lPBZJ03nw==
+"@daml/types@1.16.0":
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/@daml/types/-/types-1.16.0.tgz#e7fa4f1218699f90054e7e1e6489d383681c8692"
+  integrity sha512-pQsI7HLtfre9okxGdXA0SPfVs4uhExWGoP0I+p1Jm6ZcmkGy92B9kIWi8YgZIF96Ve/55IzsrBmAKtMNKBZsCw==
   dependencies:
     "@mojotech/json-type-validation" "^3.1.0"
 
@@ -5951,10 +5951,15 @@ ignore@^5.1.4:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
 
-immer@8.0.1, immer@^8.0.1:
+immer@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
   integrity sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==
+
+immer@^9.0.6:
+  version "9.0.6"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.6.tgz#7a96bf2674d06c8143e327cbf73539388ddf1a73"
+  integrity sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==
 
 import-cwd@^2.0.0:
   version "2.1.0"
