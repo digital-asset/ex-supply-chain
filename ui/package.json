@@ -21,7 +21,7 @@
     "react-router-dom": "^5.0.1",
     "request-promise": "^4.2.5",
     "tinycolor2": "^1.4.1",
-    "url-parse": "^1.5.0"
+    "url-parse": "^1.5.2"
   },
   "resolutions": {
     "**/**/set-value": "^2.0.1",
