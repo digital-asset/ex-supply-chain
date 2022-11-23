@@ -6,10 +6,17 @@ import React from "react";
 import { History } from 'history';
 import { createToken, dablLoginUrl } from "../config";
 
+export type PartyId = string
+
+export type PartyIdWithName = {
+  identifier: PartyId
+  displayName: string
+}
+
 type AuthenticatedUser = {
   isAuthenticated : true
   token : string
-  party : string
+  party : PartyIdWithName
 }
 
 type UnAthenticated = {
@@ -21,7 +28,7 @@ type UserState = UnAthenticated | AuthenticatedUser
 type LoginSuccess = {
   type : "LOGIN_SUCCESS"
   token : string
-  party : string
+  party : PartyIdWithName
 }
 
 type LoginFailure = {
@@ -48,9 +55,16 @@ function userReducer(state : UserState, action : LoginAction) : UserState {
   }
 }
 
+export const partyIdKey = "daml.partyId"
+export const partyDisplayNameKey = "daml.partyDisplayName"
+
 const UserProvider : React.FC = ({ children }) => {
-  const party = localStorage.getItem("daml.party")
+  const partyId = localStorage.getItem(partyIdKey)
+  const partyDisplayName = localStorage.getItem(partyDisplayNameKey)
   const token = localStorage.getItem("daml.token")
+  const party: PartyIdWithName | undefined =
+    partyId ? { identifier: partyId!, displayName: partyDisplayName! }
+            : undefined
 
   let initState : UserState = (!!party && !!token) ? { isAuthenticated : true, token, party } : { isAuthenticated : false };
   var [state, dispatch] = React.useReducer<React.Reducer<UserState,LoginAction>>(userReducer, initState);
@@ -85,7 +99,7 @@ function useUserDispatch() {
 
 function loginUser(
     dispatch : React.Dispatch<LoginAction>,
-    party : string,
+    party : PartyIdWithName,
     history : History,
     setIsLoading : React.Dispatch<React.SetStateAction<boolean>>,
     setError : React.Dispatch<React.SetStateAction<boolean>>) {
@@ -94,7 +108,8 @@ function loginUser(
 
   if (!!party) {
     const token = createToken(party)
-    localStorage.setItem("daml.party", party);
+    localStorage.setItem(partyIdKey, party.identifier);
+    localStorage.setItem(partyDisplayNameKey, party.displayName);
     localStorage.setItem("daml.token", token);
 
     dispatch({ type: "LOGIN_SUCCESS", token, party });

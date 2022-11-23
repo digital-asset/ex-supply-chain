@@ -4,7 +4,7 @@
  */
 import React, { useEffect } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import { useUserState, useUserDispatch } from "../context/UserContext";
+import { useUserState, useUserDispatch, partyIdKey, partyDisplayNameKey, PartyIdWithName } from "../context/UserContext";
 import Layout from "./Layout/Layout";
 import ErrorComponent from "../pages/error/Error";
 import Login from "../pages/login/Login";
@@ -32,7 +32,7 @@ export default function App() {
 
   function RootRoute() {
     var userDispatch = useUserDispatch();
-  
+
     useEffect(() => {
       const url = new URL(window.location.toString());
       const token = url.searchParams.get('token');
@@ -43,17 +43,18 @@ export default function App() {
       if (party === null) {
         throw Error("When 'token' is passed via URL, 'party' must be passed too.");
       }
-      localStorage.setItem("daml.party", party);
+      localStorage.setItem(partyIdKey, party);
+      localStorage.setItem(partyDisplayNameKey, party);
       localStorage.setItem("daml.token", token);
-  
-      userDispatch({ type: "LOGIN_SUCCESS", token, party });
+      const partyIdWithName: PartyIdWithName = { identifier: party, displayName: party }
+      userDispatch({ type: "LOGIN_SUCCESS", token, party: partyIdWithName });
     })
-  
+
     return (
       <Redirect to="/app/report" />
     )
   }
-  
+
   function PrivateRoute({ component, ...rest } : any) {
     return (
       <Route

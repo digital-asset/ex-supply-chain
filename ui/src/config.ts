@@ -6,6 +6,7 @@
 import * as jwt from "jsonwebtoken";
 import { addTrailingSlashIfNeeded } from "./components/Util";
 import { convertPartiesJson, PartyDetails } from '@daml/dabl-react';
+import { PartyIdWithName } from "./context/UserContext";
 
 export const httpBaseUrl = addTrailingSlashIfNeeded(process.env.REACT_APP_HTTP_BASE_URL as string);
 export const wsBaseUrl = addTrailingSlashIfNeeded(process.env.REACT_APP_WS_BASE_URL as string);
@@ -21,18 +22,18 @@ export const isDevMode = process.env.NODE_ENV === 'development'
 export const ledgerId = isDevMode ? "supply-chain" : host[0];
 export const dablLoginUrl = loginUrl.join('.') + (window.location.port ? ':' + window.location.port : '') + '/auth/login?ledgerId=' + ledgerId;
 
-export function createToken(party: string): string {
+export function createToken(party: PartyIdWithName): string {
     if (isDevMode) {
         console.log("Using generated token.");
-        return jwt.sign({ "https://daml.com/ledger-api": { ledgerId, applicationId, admin: true, actAs: [party], readAs: [party] } }, "secret");
+        return jwt.sign({ "https://daml.com/ledger-api": { ledgerId, applicationId, admin: true, actAs: [party.identifier], readAs: [party.identifier] } }, "secret");
     } else {
         console.log("Using token from parties.json file.");
         const parties = retrieveParties();
-        const partyInfo = parties?.find(o => o.partyName === party);
+        const partyInfo = parties?.find(o => o.partyName === party.displayName);
         if (partyInfo && partyInfo.token) {
             return partyInfo.token;
         }
-        alert(`Warning: no credentials available for ${party}.`);
+        alert(`Warning: no credentials available for ${party.displayName} (${party.identifier}).`);
         return "undefined";
     }
 }

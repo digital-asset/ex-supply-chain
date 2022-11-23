@@ -17,7 +17,7 @@ import {
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import useStyles from "./styles";
 import logo from "./logo.svg";
-import {loginUser, useUserDispatch} from "../../context/UserContext";
+import {loginUser, PartyIdWithName, useUserDispatch} from "../../context/UserContext";
 import {createToken, handlePartiesLoad, httpBaseUrl, ledgerId} from "../../config";
 import rp from "request-promise";
 import {addSpacesBetweenWords} from "../../components/Util";
@@ -31,7 +31,7 @@ function addPath(baseUrl: string, path: string): string {
 }
 
 async function getParties(): Promise<any[]> {
-  const defaultUser = "Buyer";
+  const defaultUser = { identifier: "Buyer", displayName: "Buyer" };
   const token = createToken(defaultUser);
   const options = {
       url: addPath(httpBaseUrl, '/v1/parties'),
@@ -81,6 +81,7 @@ function Login(props : RouteComponentProps) {
   var [isLoading, setIsLoading] = useState(false);
   var [error, setError] = useState(false);
   var [loginValue, setLoginValue] = useState("");
+  const parties = useSortedPartyNames();
 
   return (
     <Grid container className={classes.container}>
@@ -107,7 +108,7 @@ function Login(props : RouteComponentProps) {
                     if (e.key === "Enter") {
                       loginUser(
                         userDispatch,
-                        loginValue,
+                        JSON.parse(loginValue) as PartyIdWithName,
                         props.history,
                         setIsLoading,
                         setError,
@@ -116,13 +117,18 @@ function Login(props : RouteComponentProps) {
                   }}
                   fullWidth
                 >
-                  <MenuItem id="party1" value={"Buyer"}>Buyer</MenuItem>,
+                  {/* <MenuItem id="party1" value={"Buyer"}>Buyer</MenuItem>,
                   <MenuItem id="party2" value={"Seller"}>Seller</MenuItem>,
                   <MenuItem id="party3" value={"Warehouse1"}>Warehouse1</MenuItem>,
                   <MenuItem id="party4" value={"Warehouse2"}>Warehouse2</MenuItem>,
                   <MenuItem id="party5" value={"Supplier"}>Supplier</MenuItem>,
                   <MenuItem id="party6" value={"TransportCompany1"}>TransportCompany1</MenuItem>,
-                  <MenuItem id="party7" value={"TransportCompany2"}>TransportCompany2</MenuItem>
+                  <MenuItem id="party7" value={"TransportCompany2"}>TransportCompany2</MenuItem> */}
+                  { parties.map(party =>
+                    <MenuItem key={party.identifier} value={JSON.stringify(party)}>{party.displayName}</MenuItem>
+                  )
+
+                  }
                 </Select>
               </FormControl>
               <div className={classes.formButtons}>
@@ -133,7 +139,7 @@ function Login(props : RouteComponentProps) {
                     onClick={() =>
                       loginUser(
                         userDispatch,
-                        loginValue,
+                        JSON.parse(loginValue) as PartyIdWithName,
                         props.history,
                         setIsLoading,
                         setError,
